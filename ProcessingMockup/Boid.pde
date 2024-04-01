@@ -19,7 +19,7 @@ class Boid extends GameObject {
   // for now do constant velocity idc about anything
 
 
-  
+
   private PVector mass; // This will eventually act as a multiplier on acceleration so we can make behavior heavy or lighter responsive
   private color primaryColor;
   private float size = 15f;
@@ -27,7 +27,7 @@ class Boid extends GameObject {
   private float maxSpeed = 10;
   private float maxForce = 0.1;
   // Turning speed
-  
+
   private float perceptionRadius = 250f;
 
   private BoidBehavior behavior;
@@ -35,38 +35,41 @@ class Boid extends GameObject {
 
   // Simple default for now boid
   Boid(PVector initPosition, PVector initVelocity, BoidBehavior behavior) {
-    // 
+    //
     this.position = initPosition;
     this.velocity = initVelocity;
-    
+
     this.behavior = behavior;
     setRenderFunction(new SimpleBoidDebug());
-    
-    
   }
-  
-  //ArrayList<Boid> getNeighbors(boids) {
-  //  // to be defined
-  //  // if distance less than perceptionRadius
-  //  // return 
-  //}
-  
-  
+
   public void update(ArrayList<Boid> boids) {
-    
+
     ArrayList<Boid> neighbors = this.getNeighbors(boids);
     PVector movementForce = behavior.calculateMovement(this, neighbors);
     applyForce(movementForce);
-
   }
-  
+
   // TODO: Make a overload in future that doesnt use all global boids
+  // TODO: Make this generalized in the future
   public ArrayList<Boid> getNeighbors(ArrayList<Boid> boids) {
-    
     // (Naive approach)
+
+    ArrayList<Boid> Neighbors = new ArrayList<Boid>();
     // Loop through all boids that exist, if distance from this is < perceptionRadius, add to neighbors
-    
-    return new ArrayList<Boid>();
+    for (Boid boid : boids) {
+      
+      if (this == boid) continue;
+      
+      PVector neighborPosition = boid.position;
+
+      float Distance = sqrt(sq(this.position.x - neighborPosition.x)-sq(this.position.y - neighborPosition.y));
+      //make var called distance for reading clarity
+      // skip this boiiid so dont make itself a neighbor
+      if (Distance < perceptionRadius) Neighbors.add(boid);
+    }
+
+    return Neighbors;
   }
 
   private void applyForce(PVector force) {
@@ -77,7 +80,7 @@ class Boid extends GameObject {
     position.add(velocity);
     wrapPosition();
   }
-  
+
   private void wrapPosition() {
     // CODE TO BE CHANGED THIS IS BAD AND TEMPORARY:
     if (position.x > width + size) position.x = (-size);
