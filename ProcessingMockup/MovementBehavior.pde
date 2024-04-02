@@ -5,20 +5,37 @@ public interface BoidBehavior {
 
 public class FlockBehavior implements BoidBehavior {
   public PVector calculateMovement(Boid boid, ArrayList<Boid> neighbors) {
+    
+    if (neighbors.size() == 0) return new PVector();
+
     // Calculate movement direction based on all flocking rules:
-    
-    PVector separationForce = new PVector(0,0);
-    PVector cohesionForce = new PVector(0,0);
-    PVector alignmentForce = new PVector(0,0);
-    
+
+    PVector separationForce = new PVector(0, 0);
+    PVector cohesionForce = new PVector(0, 0);
+    PVector alignmentForce = new PVector(0, 0);
+
     // Calculate Separation Force:
-    // separationForce = new PVector(1,0);
-    
+
     // Calculate Cohesion Force:
+    PVector avg_Position = new PVector(0, 0);
+    for (Boid b : neighbors) {
+      avg_Position.add(b.position);
+    }
+
+    avg_Position.div(neighbors.size());
+    cohesionForce =  avg_Position.sub(boid.position);
 
 
     // Calculate Alignment Force:
+    
+   
+    PVector avg_Velocity = new PVector(0, 0);
+    for (Boid b : neighbors) {
+      avg_Velocity.add(b.velocity);
+    }
 
+    avg_Velocity.div(neighbors.size());
+    alignmentForce =  avg_Velocity.sub(boid.velocity);
 
 
     // Calculate and add net force:
@@ -33,19 +50,36 @@ public class FlockBehavior implements BoidBehavior {
 public class SeparationBehavior implements BoidBehavior {
   public PVector calculateMovement(Boid boid, ArrayList<Boid> neighbors) {
     // Calculate movement direction based on separation rule
-    return new PVector();
+    if (neighbors.size() == 0) return new PVector();
+
+    // Calculate movement direction based on alignment rule
+    
+    PVector netSeparationForce = new PVector(0, 0);
+    for (Boid b : neighbors) {
+      float distance = sqrt(sq(boid.position.x - b.position.x)-sq(boid.position.y - b.position.y));
+      PVector forceDirection = (boid.position.copy().sub(b.position.copy())).normalize();
+
+      netSeparationForce.add(forceDirection.div(sq(distance)));
+    }
+
+    netSeparationForce.div(neighbors.size());
+    return netSeparationForce.sub(boid.position);
   }
 }
 
 // TODO: Needs to be completed
 public class AlignmentBehavior implements BoidBehavior {
   public PVector calculateMovement(Boid boid, ArrayList<Boid> neighbors) {
+    if (neighbors.size() == 0) return new PVector();
+
     // Calculate movement direction based on alignment rule
-    PVector avg_Velocity = new PVector();
-    for(Boid boids : neighbors) avg_Velocity.add(boids.velocity);
-    
+    PVector avg_Velocity = new PVector(0, 0);
+    for (Boid b : neighbors) {
+      avg_Velocity.add(b.velocity);
+    }
+
     avg_Velocity.div(neighbors.size());
-    return avg_Velocity;
+    return avg_Velocity.sub(boid.velocity);
   }
 }
 
@@ -53,7 +87,16 @@ public class AlignmentBehavior implements BoidBehavior {
 public class CohesionBehavior implements BoidBehavior {
   public PVector calculateMovement(Boid boid, ArrayList<Boid> neighbors) {
     // Calculate movement direction based on cohesion rule
-    return new PVector();
+    if (neighbors.size() == 0) return new PVector();
+
+    // Calculate movement direction based on alignment rule
+    PVector avg_Position = new PVector(0, 0);
+    for (Boid b : neighbors) {
+      avg_Position.add(b.position);
+    }
+
+    avg_Position.div(neighbors.size());
+    return avg_Position.sub(boid.position);
   }
 }
 
