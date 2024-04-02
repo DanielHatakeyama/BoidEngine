@@ -28,6 +28,8 @@ public class FlockBehavior implements BoidBehavior {
 }
 
 
+
+// TODO: Needs to be completed
 public class SeparationBehavior implements BoidBehavior {
   public PVector calculateMovement(Boid boid, ArrayList<Boid> neighbors) {
     // Calculate movement direction based on separation rule
@@ -35,13 +37,19 @@ public class SeparationBehavior implements BoidBehavior {
   }
 }
 
+// TODO: Needs to be completed
 public class AlignmentBehavior implements BoidBehavior {
   public PVector calculateMovement(Boid boid, ArrayList<Boid> neighbors) {
     // Calculate movement direction based on alignment rule
-    return new PVector();
+    PVector avg_Velocity = new PVector();
+    for(Boid boids : neighbors) avg_Velocity.add(boids.velocity);
+    
+    avg_Velocity.div(neighbors.size());
+    return avg_Velocity;
   }
 }
 
+// TODO: Needs to be completed
 public class CohesionBehavior implements BoidBehavior {
   public PVector calculateMovement(Boid boid, ArrayList<Boid> neighbors) {
     // Calculate movement direction based on cohesion rule

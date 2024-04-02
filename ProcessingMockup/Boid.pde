@@ -56,17 +56,18 @@ class Boid extends GameObject {
     // (Naive approach)
 
     ArrayList<Boid> Neighbors = new ArrayList<Boid>();
+    
     // Loop through all boids that exist, if distance from this is < perceptionRadius, add to neighbors
     for (Boid boid : boids) {
       
+      // ignore starting boid
       if (this == boid) continue;
       
       PVector neighborPosition = boid.position;
 
-      float Distance = sqrt(sq(this.position.x - neighborPosition.x)-sq(this.position.y - neighborPosition.y));
-      //make var called distance for reading clarity
-      // skip this boiiid so dont make itself a neighbor
-      if (Distance < perceptionRadius) Neighbors.add(boid);
+      float distance = sqrt(sq(this.position.x - neighborPosition.x)-sq(this.position.y - neighborPosition.y));
+      
+      if (distance < perceptionRadius) Neighbors.add(boid);
     }
 
     return Neighbors;
