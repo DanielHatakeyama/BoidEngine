@@ -5,7 +5,7 @@ public interface BoidBehavior {
 
 public class FlockBehavior implements BoidBehavior {
   public PVector calculateMovement(Boid boid, ArrayList<Boid> neighbors) {
-    
+
     if (neighbors.size() == 0) return new PVector();
 
     // Calculate movement direction based on all flocking rules:
@@ -15,6 +15,24 @@ public class FlockBehavior implements BoidBehavior {
     PVector alignmentForce = new PVector(0, 0);
 
     // Calculate Separation Force:
+    PVector separationVector = new PVector();
+    float protectedRange = 50; 
+    float avoidFactor = 1.5f;
+
+    for (Boid neighbor : neighbors) {
+      float distance = PVector.dist(boid.position, neighbor.position);
+
+      // Check if the neighbor is within the protected range
+      if (distance < protectedRange && distance > 0) {
+        PVector difference = PVector.sub(boid.position, neighbor.position);
+        separationVector.add(difference);
+      }
+    }
+
+    // Apply the avoid factor to scale the separation force if needed
+    separationVector.mult(avoidFactor);
+
+    separationForce =  separationVector;
 
     // Calculate Cohesion Force:
     PVector avg_Position = new PVector(0, 0);
@@ -27,8 +45,8 @@ public class FlockBehavior implements BoidBehavior {
 
 
     // Calculate Alignment Force:
-    
-   
+
+
     PVector avg_Velocity = new PVector(0, 0);
     for (Boid b : neighbors) {
       avg_Velocity.add(b.velocity);
@@ -49,21 +67,26 @@ public class FlockBehavior implements BoidBehavior {
 // TODO: Needs to be completed
 public class SeparationBehavior implements BoidBehavior {
   public PVector calculateMovement(Boid boid, ArrayList<Boid> neighbors) {
-    // Calculate movement direction based on separation rule
-    if (neighbors.size() == 0) return new PVector();
+    if (neighbors.isEmpty()) return new PVector();
 
-    // Calculate movement direction based on alignment rule
-    
-    PVector netSeparationForce = new PVector(0, 0);
-    for (Boid b : neighbors) {
-      float distance = sqrt(sq(boid.position.x - b.position.x)-sq(boid.position.y - b.position.y));
-      PVector forceDirection = (boid.position.copy().sub(b.position.copy())).normalize();
+    PVector separationVector = new PVector();
+    float protectedRange = 100; // Range of the radius
+    float avoidFactor = 2f; //avoidance intensity
 
-      netSeparationForce.add(forceDirection.div(sq(distance)));
+    for (Boid neighbor : neighbors) {
+      float distance = PVector.dist(boid.position, neighbor.position);
+
+      // Check if the neighbor is within the protected range
+      if (distance < protectedRange && distance > 0) {
+        PVector difference = PVector.sub(boid.position, neighbor.position);
+        separationVector.add(difference);
+      }
     }
 
-    netSeparationForce.div(neighbors.size());
-    return netSeparationForce.sub(boid.position);
+    // Apply the avoid factor to scale the separation force if needed
+    separationVector.mult(avoidFactor);
+
+    return separationVector;
   }
 }
 
