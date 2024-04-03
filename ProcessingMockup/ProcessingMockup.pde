@@ -4,28 +4,15 @@
 // Singleton for settings? Such as boid radius, etc. this is a good sub for a lut
 // default settings like default boid color, etc and then just choie of boid color on top of that like user defined but can reset to normal
 
-ArrayList<Boid> boids = new ArrayList<>();    
-
-
-//public void createBoids(int n) {
-//  for (int i=0; i<n; i++) {
-//    createBoid();
-//  }
-//}
-
-
-public void createBoid(PVector pos) {
-  PVector randVelocity = PVector.random2D().mult(2f);
-  
-  Boid b = new Boid(pos, randVelocity, new FlockBehavior());
-  
-  boids.add(b);
-}
-
+EntityManager entityManager = new EntityManager();
 
 public void mousePressed() {
   PVector mousePos = new PVector(mouseX, mouseY);
-  createBoid(mousePos);
+  entityManager.buildEntity()
+    .with(new DefaultTransform(mouseX, mouseY))
+    .with(new SimpleBoidDebug())
+    .create();
+  
 }
 
 public void setup() {
