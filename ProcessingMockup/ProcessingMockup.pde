@@ -9,10 +9,9 @@ EntityManager entityManager = new EntityManager();
 public void mousePressed() {
   PVector mousePos = new PVector(mouseX, mouseY);
   entityManager.buildEntity()
-    .with(new DefaultTransform(mouseX, mouseY))
+    .with(new Transform2D(mouseX, mouseY))
     .with(new SimpleBoidDebug())
     .create();
-  
 }
 
 public void setup() {
@@ -36,6 +35,7 @@ void drawBoids() {
     b.render();
   }
 }
+
 void drawBackground() {
   background(#9CBFED);
 }

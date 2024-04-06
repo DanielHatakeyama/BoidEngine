@@ -1,40 +1,57 @@
 public interface Component {
-  
+
   /* Description:
    Components are added to entities to compose behavior from small parts.
-  */
+   */
 
   /* Method to initialize the component:
    Performs initialization tasks when the component is attached to an entity
    */
-  void initialize();
+  default void initialize(){
+  }
 
   /* Method to update the component:
    Updates the component's state based on elapsed time to keep steady independent of frame rate.
    */
-  void update(float deltaTime);
+  default void update(float deltaTime){
+  }
 
   /* Method to clean up the component:
    Performs cleanup tasks when the component is removed from an entity.
    This include removing observers, preventing memory leaks, etc.
    */
-  void cleanup();
+  default void cleanup(){
+  }
 }
 
 public interface Transform extends Component {
+
+  // Position
+  PVector getPosition();
+
+  // Set the position of the entity
+  void setPosition(PVector position);
+}
+
+public class Transform2D implements Transform {
+
+  private PVector position;
   
-    // Position
+  public Transform2D(int mouseX, int mouseY){
+      this.position.x = mouseX;
+      this.position.y = mouseY;
+  }
+  
 
-    PVector getPosition();
+  @Override
+    PVector getPosition() {
+    return this.position;
+  }
 
-    // Set the position of the entity
-    void setPosition(PVector position);
-
-    // Get the scale of the entity
-    PVector getScale();
-
-    // Set the scale of the entity
-    void setScale(PVector scale);
+  @Override
+    void setPosition(PVector position) {
+    this.position = position;
+  }
 }
 
 /* Component interface for rendering behavior:

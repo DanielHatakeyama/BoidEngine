@@ -65,3 +65,10 @@ public class Entity {
       removeComponent(component.getClass());
     }
   }
+  
+  public int getID() {
+    return this.id;
+  }
+  
+
+}

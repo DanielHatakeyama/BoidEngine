@@ -11,30 +11,33 @@ public class EntityManager {
   private Map<Integer, Entity> entities = new HashMap<>();
 
   // ---------- Entity Creation ---------- //
+  
   // Create a new entity with an automatically generated ID
-  public EntityBuilder createEntity() {
+  public EntityBuilder buildEntity() {
     return new EntityBuilder(this, nextEntityId++);
   }
+  
   // Method to add the created entity to the entity manager
   public void addEntity(Entity entity) {
-    entities.put(entity.getId(), entity);
+    entities.put(entity.getID(), entity);
   }
+  
   // Delete an entity by removing it from the map
   public void deleteEntity(int entityId) {
     Entity entity = entities.remove(entityId);
     if (entity != null) {
       // cleanup entity
+      entity.cleanup();
     }
   }
 
-  public void updateEntities(float deltaTime) {
-    for (Entity entity : entities.values()) {
-      entity.update(deltaTime);
-    }
-  }
+  //public void updateEntities(float deltaTime) {
+  //  for (Entity entity : entities.values()) {
+  //    entity.update(deltaTime);
+  //  }
+  //}
 
   // ---------- Entity Management ---------- //
-
 
 
   // Attach a component to an entity

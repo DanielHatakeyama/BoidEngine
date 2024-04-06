@@ -26,6 +26,7 @@ class Boid extends GameObject {
   private PVector faceDirection; // Is velocity vector most of the time i think i cant think of a counter ex
   private float maxSpeed = 10;
   private float maxForce = 0.1;
+  
   // Turning speed
   
   private float perceptionRadius = 250f;
@@ -41,7 +42,6 @@ class Boid extends GameObject {
     
     this.behavior = behavior;
     setRenderFunction(new SimpleBoidDebug());
-    
     
   }
   
