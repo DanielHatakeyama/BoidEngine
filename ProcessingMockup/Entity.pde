@@ -42,6 +42,7 @@ public class Entity {
   // addComponent (with instance of component)
   public <T extends Component> void addComponent(T component) {
     components.put(component.getClass(), component);
+    component.initialize();
   }
 
   // removeComponent (by component class)

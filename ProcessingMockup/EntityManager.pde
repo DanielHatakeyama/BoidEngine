@@ -1,7 +1,7 @@
 import java.util.HashMap;
 import java.util.Map;
 
-// TODO Explain later, main idea is give gameobjects id so they can be stored in LUT
+// TODO Explain later, main idea is give entity an id so they can be stored in LUT
 // We have serveral things to help run the game more like create destroy and modify components of a game object
 import java.util.HashMap;
 import java.util.Map;
@@ -31,12 +31,6 @@ public class EntityManager {
     }
   }
 
-  //public void updateEntities(float deltaTime) {
-  //  for (Entity entity : entities.values()) {
-  //    entity.update(deltaTime);
-  //  }
-  //}
-
   // ---------- Entity Management ---------- //
 
 
@@ -50,9 +44,9 @@ public class EntityManager {
     entities.get(entityId).removeComponent(componentClass);
   }
 
-  // Get a component attached to an entity
+  // Get a component attached to an entity // TODO might need to make some error catching
   public <T extends Component> T getComponent(int entityId, Class<T> componentClass) {
-    return entities.get(entityId).getComponent(componentClass);
+    return entities.get(entityId).getComponent(componentClass); //<>//
   }
 
   public Entity getEntityByID(int entityID) {
@@ -61,5 +55,9 @@ public class EntityManager {
     // Handle the case where the specified ID does not exist
     if (entity == null) throw new IllegalArgumentException("No entity found with ID: " + entityID);
     return entity;
+  }
+  
+  public Map<Integer, Entity> TestingGetEntities() {
+    return this.entities;
   }
 }

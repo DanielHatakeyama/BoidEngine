@@ -6,16 +6,22 @@
 
 EntityManager entityManager = new EntityManager();
 
+RenderSystem renderSystem = new RenderSystem();
+
+PGraphics scene;
+
+
 public void mousePressed() {
-  PVector mousePos = new PVector(mouseX, mouseY);
+
   entityManager.buildEntity()
-    .with(new Transform2D(mouseX, mouseY))
-    .with(new SimpleBoidDebug())
+    .with(new Transform(mouseX, mouseY))
+    .with(new Renderer(new CircleRenderFunction()))
     .create();
 }
 
 public void setup() {
-    size(1600,1000);
+  size(1600, 1000);
+  scene = createGraphics(width, height);
 }
 
 
@@ -23,19 +29,26 @@ public void draw() {
   // For each boid
   // Do the rules it needs to do
   // Then render
+
   drawBackground();
-  drawBoids();
+  
+  renderRenderablesTest();
+  image(scene, 0, 0);
+  
 }
 
-
-
-void drawBoids() {
-  for(Boid b : boids) {
-    b.update(boids);
-    b.render();
-  }
-}
 
 void drawBackground() {
   background(#9CBFED);
+}
+
+
+void renderRenderablesTest() {
+  Map<Integer, Entity> ents = entityManager.TestingGetEntities();
+  
+  scene.beginDraw();
+  for (Entity entity : ents.values()) {
+    renderSystem.renderEntity(scene, entity);
+  }
+  scene.endDraw();
 }
