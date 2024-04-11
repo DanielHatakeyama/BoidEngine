@@ -6,7 +6,7 @@ public interface BoidBehavior {
 public class FlockBehavior implements BoidBehavior {
   public PVector calculateMovement(Boid boid, ArrayList<Boid> neighbors) {
 
-    if (neighbors.size() == 0) return new PVector();
+    if (neighbors.size() == 0) return new PVector(0, 0);
 
     // Calculate movement direction based on all flocking rules:
 
@@ -14,50 +14,64 @@ public class FlockBehavior implements BoidBehavior {
     PVector cohesionForce = new PVector(0, 0);
     PVector alignmentForce = new PVector(0, 0);
 
+    // Force Scalars
+    float separationScale = 80f;
+    float cohesionScale = 0.5f;
+    float alignmentScale = 3f;
+    
+    // Separation min distance percent
+    float minSeparationPercent = 0.3f;
+
+    float numNeighbors = (neighbors.size()==0)? 1f : (float)neighbors.size();
+
+    float minSeparationDistance = minSeparationPercent * boid.getPerceptionRadius();
+    float separationNeighbors = 0;
     // Calculate Separation Force:
-    PVector separationVector = new PVector();
-    float protectedRange = 50; 
-    float avoidFactor = 1.5f;
-
     for (Boid neighbor : neighbors) {
-      float distance = PVector.dist(boid.position, neighbor.position);
 
-      // Check if the neighbor is within the protected range
-      if (distance < protectedRange && distance > 0) {
-        PVector difference = PVector.sub(boid.position, neighbor.position);
-        separationVector.add(difference);
+      PVector difference = PVector.sub(boid.getPosition(), neighbor.getPosition());
+      float distance = difference.mag();
+
+      if (distance < minSeparationDistance) {
+        difference.normalize();
+        println(distance);
+        //difference.div(distance*distance);
+        separationForce.add(difference);
+        separationNeighbors += 1;
       }
     }
-
-    // Apply the avoid factor to scale the separation force if needed
-    separationVector.mult(avoidFactor);
-
-    separationForce =  separationVector;
+    if (separationNeighbors > 0) separationForce.div(separationNeighbors); // This represents the AVERAGE push
 
     // Calculate Cohesion Force:
-    PVector avg_Position = new PVector(0, 0);
-    for (Boid b : neighbors) {
-      avg_Position.add(b.position);
+    PVector averagePostion = new PVector(0, 0);
+    for (Boid neighbor : neighbors) {
+      averagePostion.add(neighbor.getPosition());
     }
-
-    avg_Position.div(neighbors.size());
-    cohesionForce =  avg_Position.sub(boid.position);
+    averagePostion.div(numNeighbors);
+    cohesionForce = PVector.sub(averagePostion, boid.getPosition());
 
 
     // Calculate Alignment Force:
-
-
-    PVector avg_Velocity = new PVector(0, 0);
-    for (Boid b : neighbors) {
-      avg_Velocity.add(b.velocity);
+    PVector averageVelocity = new PVector(0, 0);
+    for (Boid neighbor : neighbors) {
+      averageVelocity.add(neighbor.getVelocity());
     }
+    averageVelocity.div(numNeighbors);
+    alignmentForce = PVector.sub(averageVelocity, boid.getVelocity());
 
-    avg_Velocity.div(neighbors.size());
-    alignmentForce =  avg_Velocity.sub(boid.velocity);
-
+    // Scale all forces by the corresponding multiplier
+    separationForce.mult(separationScale);
+    cohesionForce.mult(cohesionScale);
+    alignmentForce.mult(alignmentScale);
 
     // Calculate and add net force:
-    PVector netForce = separationForce.add(cohesionForce).add(alignmentForce);
+    PVector netForce = new PVector(0, 0);
+    netForce.add(separationForce);
+    netForce.add(cohesionForce);
+    netForce.add(alignmentForce);
+    
+    //netForce.normalize().div(60);
+
     return netForce;
   }
 }

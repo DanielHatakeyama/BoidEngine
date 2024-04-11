@@ -21,15 +21,18 @@ public void createBoid(PVector pos) {
   
   boids.add(b);
 }
-
-
 public void mousePressed() {
   PVector mousePos = new PVector(mouseX, mouseY);
   createBoid(mousePos);
 }
 
 public void setup() {
-    size(1600,1000);
+    size(1000,800);
+    
+    for (int i = 0; i<50; i++) {
+      PVector randomPosition = new PVector(random(width), random(height));
+      createBoid(randomPosition);
+    }
 }
 
 

@@ -56,8 +56,8 @@ class SimpleBoidDebug implements RenderFunction<Boid> {
     
     push();
     noStroke();
-    fill(153, 255, 153, 80);
-    circle(pos.x, pos.y, boid.getPerceptionRadius());
+    fill(153, 255, 153, 20);
+    circle(pos.x, pos.y, 2* boid.getPerceptionRadius());
     
     pop();
     

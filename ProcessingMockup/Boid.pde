@@ -24,11 +24,11 @@ class Boid extends GameObject {
   private color primaryColor;
   private float size = 15f;
   private PVector faceDirection; // Is velocity vector most of the time i think i cant think of a counter ex
-  private float maxSpeed = 10;
-  private float maxForce = 0.1;
+  private float maxSpeed = 5f;
+  private float maxForce = 0.5;
   // Turning speed
 
-  private float perceptionRadius = 250f;
+  private float perceptionRadius = 180f;
 
   private BoidBehavior behavior;
 
@@ -63,11 +63,13 @@ class Boid extends GameObject {
       // ignore starting boid
       if (this == boid) continue;
       
-      PVector neighborPosition = boid.position;
-
-      float distance = sqrt(sq(this.position.x - neighborPosition.x)-sq(this.position.y - neighborPosition.y));
+      //PVector neighborPosition = boid.position;
+      //float distance = sqrt(sq(this.position.x - neighborPosition.x)-sq(this.position.y - neighborPosition.y));
+      float distance = PVector.dist(this.getPosition(), boid.getPosition());
       
-      if (distance < perceptionRadius) Neighbors.add(boid);
+      if (distance < perceptionRadius) {
+        Neighbors.add(boid);
+      }
     }
 
     return Neighbors;
@@ -75,11 +77,15 @@ class Boid extends GameObject {
 
   private void applyForce(PVector force) {
     // Applys force vector in controlled way - limits force, max velocity, and wraps boid position
+    //force.div(50);
+    
     force.limit(maxForce);
     velocity.add(force);
     velocity.limit(maxSpeed);
+    //velocity.normalize().mult(maxSpeed); // temporary make boids always go max speed
     position.add(velocity);
-    wrapPosition();
+    //wrapPosition();
+    bounceEdges();
   }
 
   private void wrapPosition() {
@@ -89,6 +95,19 @@ class Boid extends GameObject {
 
     if (position.y > height + size) position.y = (-size);
     if (position.y < -size) position.y += (height + size);
+  }
+  
+  private void bounceEdges() {
+    
+    float bounceForce = 0.5f;
+    float innerBoundary = 50f; // In pixels
+    
+    // CODE TO BE CHANGED THIS IS BAD AND TEMPORARY:
+    if (position.x > width + size - innerBoundary) this.velocity.x -= bounceForce; //applyForce(new PVector(-bounceForce,0));
+    if (position.x < -size + innerBoundary) this.velocity.x += bounceForce; //applyForce(new PVector(bounceForce,0));
+
+    if (position.y > height + size - innerBoundary) this.velocity.y -= bounceForce; //applyForce(new PVector(0,-bounceForce));
+    if (position.y < -size + innerBoundary) this.velocity.y += bounceForce; //applyForce(new PVector(0,bounceForce)); // down
   }
 
   // Graphical Functions
@@ -105,6 +124,13 @@ class Boid extends GameObject {
   }
   public float getPerceptionRadius() {
     return this.perceptionRadius;
+  }
+  
+  public PVector getPosition() {
+    return this.position.copy();
+  }
+  public PVector getVelocity() {
+    return this.velocity.copy();
   }
 }
 
