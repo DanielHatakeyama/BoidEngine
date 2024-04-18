@@ -34,7 +34,7 @@ public class FlockBehavior implements BoidBehavior {
 
       if (distance < minSeparationDistance) {
         difference.normalize();
-        println(distance);
+        //println(distance);
         //difference.div(distance*distance);
         separationForce.add(difference);
         separationNeighbors += 1;
