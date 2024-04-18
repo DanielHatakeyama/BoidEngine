@@ -4,24 +4,35 @@
 // Singleton for settings? Such as boid radius, etc. this is a good sub for a lut
 // default settings like default boid color, etc and then just choie of boid color on top of that like user defined but can reset to normal
 
-EntityManager entityManager = new EntityManager();
-
-RenderSystem renderSystem = new RenderSystem();
-
+EventManager eventManager; // this should eventually be created in the world and be dependency injected all the way down as needed, specifically to system entity managers
 PGraphics scene;
+EntityManager entityManager;
+RenderSystem renderSystem;
 
 
 public void mousePressed() {
-
+  println("Mouse Pressed");
   entityManager.buildEntity()
     .with(new Transform(mouseX, mouseY))
     .with(new Renderer(new CircleRenderFunction()))
+    .with(new Tag("circle"))
     .create();
 }
 
 public void setup() {
-  size(1600, 1000);
-  scene = createGraphics(width, height);
+
+  println("Setup");
+
+  int w = 1600;
+  int h = 1000;
+
+  size(w, h);
+  scene = createGraphics(w, h);
+  
+  eventManager = new EventManager();
+  entityManager = new EntityManager(eventManager);
+  renderSystem = new RenderSystem(eventManager, scene);
+  
 }
 
 
@@ -31,10 +42,9 @@ public void draw() {
   // Then render
 
   drawBackground();
-  
+
   renderRenderablesTest();
   image(scene, 0, 0);
-  
 }
 
 
@@ -44,11 +54,8 @@ void drawBackground() {
 
 
 void renderRenderablesTest() {
-  Map<Integer, Entity> ents = entityManager.TestingGetEntities();
-  
   scene.beginDraw();
-  for (Entity entity : ents.values()) {
-    renderSystem.renderEntity(scene, entity);
-  }
+  //println("Render System Update");
+  renderSystem.update(1);
   scene.endDraw();
 }

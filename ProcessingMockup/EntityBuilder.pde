@@ -1,24 +1,46 @@
+import java.util.ArrayList;
+import java.util.List;
+
 public class EntityBuilder {
-    private final EntityManager entityManager;
-    private final int entityId;
-    private final Entity entity;
+  private final EntityManager entityManager;
+  private final Entity entity;
+  private final List<Component> componentsToNotify;  // List to store components temporarily
 
-    // When builder is constructed in the context of the entity manager class, we create new entity with the genrated id
-    public EntityBuilder(EntityManager entityManager, int entityId) {
-        this.entityManager = entityManager;
-        this.entityId = entityId;
-        this.entity = new Entity(entityId);
+
+  // When builder is constructed in the context of the entity manager class, we create new entity with the genrated id
+  public EntityBuilder(EntityManager entityManager, int entityId) {
+    this.entityManager = entityManager;
+    this.entity = new Entity(entityId);
+    this.componentsToNotify = new ArrayList<>();
+
+    //// Transform and Tag components are being added by default
+    //Transform defaultTransform = new Transform();  // Example: create a default transform
+    //Tag defaultTag = new Tag("default");  // Example: create a default tag
+    //this.componentsToNotify.add(defaultTransform);
+    //this.componentsToNotify.add(defaultTag);
+
+    // TODO add transform and tag components by default since all entities should have a default tag and a transform.
+    println("Building Entity");
+  }
+
+  // Add methods to configure the entity as needed
+  public EntityBuilder with(Component component) {
+    println("With Component: " + component.getClass().getSimpleName());
+    // TODO make this so all of the events are done after create is called in a buffer IMPORTANT
+    this.entity.addComponent(component);
+    this.componentsToNotify.add(component);
+    return this;
+  }
+
+  // Method to build and return the created entity
+  public Entity create() {
+    
+    entityManager.addEntity(entity);
+
+    for (Component component : componentsToNotify) {
+      eventManager.notifySubscribers(new ComponentAddedEvent(entity, component));
     }
 
-    // Add methods to configure the entity as needed
-    public EntityBuilder with(Component component) {
-        entity.addComponent(component);
-        return this;
-    }
-
-    // Method to build and return the created entity
-    public Entity create() {
-        entityManager.addEntity(entity);
-        return entity;
-    }
+    return entity;
+  }
 }

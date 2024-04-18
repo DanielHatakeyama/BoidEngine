@@ -24,11 +24,18 @@ public class Entity {
    */
   private Map<Class<? extends Component>, Component> components = new HashMap<>();
 
+  private Set<String> tags = new HashSet<>(); // Multiple tags
+
 
   // ---------- Constructor ---------- //
   public Entity(int id) {
     this.id = id;
   }
+  // TODO upgrade tag system to make it so we can shove it in on constructor
+  //public Entity(int id) {
+  //  this.id = id;
+  //}
+
 
   // ---------- Component Handling ---------- //
 
@@ -61,15 +68,33 @@ public class Entity {
     return components.containsKey(componentClass);
   }
 
+  public List<Component> getComponents() {
+    return (List)components.values();
+  }
+
+  // ---------- Tag Handling ---------- //
+  public void addTag(String tag) {
+    tags.add(tag);
+  }
+  public void removeTag(String tag) {
+    tags.remove(tag);
+  }
+
+  public boolean hasTag(String tag) {
+    return tags.contains(tag);
+  }
+
+  public Set<String> getTags() {
+    return new HashSet<>(tags); // Return a copy to maintain encapsulation
+  }
+
   public void cleanup() {
     for (Component component : components.values()) {
       removeComponent(component.getClass());
     }
   }
-  
+
   public int getID() {
     return this.id;
   }
-  
-
 }

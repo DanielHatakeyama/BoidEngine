@@ -1,5 +1,5 @@
 public interface Component {
-  
+
   /* Description:
    Components are added to entities to compose behavior from small parts.
    */
@@ -15,6 +15,27 @@ public interface Component {
    This include removing observers, preventing memory leaks, etc.
    */
   default void cleanup() {
+  }
+}
+
+// Tags provide a unique identification system of entity types. This is to distinguish two entities that are different but share the same set of components
+public class Tag implements Component {
+  private String tag;
+
+  public Tag() {
+    this.setTag("default");
+  }
+
+  public Tag(String tag) {
+    this.setTag(tag);
+  }
+
+  public String getTag() {
+    return tag;
+  }
+
+  public void setTag(String tag) {
+    this.tag = tag.toLowerCase();
   }
 }
 
@@ -88,8 +109,9 @@ public class Renderer implements Component {
   }
 
   // Make set render function / get render function / remove render function
-  
+
   public void render(PGraphics renderContext, Transform transform) {
+    println("In render component.render");
     if (renderFunction != null) {
       renderFunction.render(renderContext, transform);
     }
