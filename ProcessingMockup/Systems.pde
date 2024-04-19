@@ -61,6 +61,10 @@ public class RenderSystem extends System {
   @Override
     protected void onComponentRemoved(Entity entity, Component component) {
     // Implementation for removing a component from the rendering system
+    Integer ID = entity.getID();
+    renderers.remove(ID);
+    transforms.remove(ID);
+    println("Removing id:" + ID + " from renderers.");
   }
 
   @Override
@@ -105,6 +109,10 @@ public class PhysicsSystem extends System {
   @Override
     protected void onComponentRemoved(Entity entity, Component component) {
     // Implementation for removing a component from the rendering system // todo for ben
+    Integer ID = entity.getID();
+    rigidBodies.remove(ID);
+    transforms.remove(ID);
+    println("Removing id:" + ID + " from rigidbody.");
   }
 
   @Override
