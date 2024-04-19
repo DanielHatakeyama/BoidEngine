@@ -56,7 +56,6 @@ public class RenderSystem extends System {
       transforms.put(ID, entity.getComponent(Transform.class));
       renderers.put(ID, (Renderer)component);
       println("Adding id:" + ID + " to renderers.");
-      
   }
 
   @Override
@@ -70,35 +69,59 @@ public class RenderSystem extends System {
       println("Updating rendererSystem (in loop) : " + id);
       Renderer renderer = this.renderers.get(id);
       Transform transform = this.transforms.get(id);
-
-      if(renderer == null) continue;
+      
+      if ((renderer == null) || (transform == null)) continue; // TODO ben, make this print a warning / return an exception
       
       renderer.render(renderContext,transform);
     }
   }
 }
 
-//public class RenderSystem implements System {
 
-//  private Set<Component> subscribedTransforms = new HashSet<>();
+// Finally im coding and it doesnt have to be perfect
+public class PhysicsSystem extends System {
 
-//  @Override
-//  public void subscribe() {
-//    subscribedEntities.add(entityId);
-//  }
+  // ID - Component pairs -> Decouples entity from the system - component calculation
+  private Map<Integer, Transform> transforms = new HashMap<>();
+  private Map<Integer, RigidBody> rigidBodies = new HashMap<>();
 
-//  @Override
-//  public void unsubscribe(int entityId) {
-//    subscribedEntities.add(entityId);
-//  }
+  public PhysicsSystem(EventManager eventManager) {
+    super(eventManager);
+  }
+
+  @Override
+  protected boolean matchesSystemCriteria(ComponentEvent event) {
+    return event.isComponentType(RigidBody.class);
+  }
+
+  @Override
+    protected void onComponentAdded(Entity entity, Component component) {
+      Integer ID = entity.getID();
+      transforms.put(ID, entity.getComponent(Transform.class));
+      rigidBodies.put(ID, (RigidBody)component);
+      println("Adding id:" + ID + " to rigidbody.");
+  }
+
+  @Override
+    protected void onComponentRemoved(Entity entity, Component component) {
+    // Implementation for removing a component from the rendering system
+  }
+
+  @Override
+  public void update(float deltaTime) {
+    println("Updating physicsSystem");
+    for (Integer id : rigidBodies.keySet()) {
+      
+      RigidBody rigidBody = this.rigidBodies.get(id);
+      Transform transform = this.transforms.get(id);
+      
+      if ((rigidBody == null) || (transform == null)) continue; // TODO for ben, do the same thing for this one.
+      
+      
+      
+    }
+  }
+}
 
 
-//}
-//public void renderEntity(PGraphics renderContext, Entity entity) {
-//  Renderer renderer = entity.getComponent(Renderer.class);
-//  Transform transform = entity.getComponent(Transform.class);
-
-//  if (renderer != null && transform != null) {
-//    renderer.render(renderContext, transform);
-//  }
-//}
+                                                                                   

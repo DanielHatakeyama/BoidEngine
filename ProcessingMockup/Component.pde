@@ -117,3 +117,33 @@ public class Renderer implements Component {
     }
   }
 }
+
+
+public class RigidBody implements Component {
+  
+  public PVector velocity = new PVector(0,0);
+  public PVector acceleration = new PVector(0,0);
+  public float mass = 1;
+  
+  public boolean isStatic = false;
+  
+  public RigidBody() {
+    // Empty default constructor
+    // TODO make a few more constuctors for init velocity and mass, no init acceleration
+    // TODO make a few more changes to also allow for creation of static bodies.
+  }
+  
+  public void applyForce(PVector force) {
+    if (isStatic) return;
+    PVector forceAcc = PVector.div(force, mass);
+    acceleration.add(forceAcc);
+  }
+  
+  public void update(int deltaTime) {
+    if (isStatic) return;
+    velocity.add(PVector.mult(acceleration, deltaTime));
+    acceleration.mult(0); // Clear acc after each update, i guess unless it is gravity but we aint doing that, there is a better way to do this i think
+  }
+  
+}power
+  

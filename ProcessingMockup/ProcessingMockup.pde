@@ -10,7 +10,7 @@ EntityManager entityManager;
 RenderSystem renderSystem;
 
 
-public void mousePressed() {
+public void mouseDragged() {
   println("Mouse Pressed");
   entityManager.buildEntity()
     .with(new Transform(mouseX, mouseY))
@@ -23,11 +23,8 @@ public void setup() {
 
   println("Setup");
 
-  int w = 1600;
-  int h = 1000;
-
-  size(w, h);
-  scene = createGraphics(w, h);
+  size(1600, 1000);
+  scene = createGraphics(width, height);
   
   eventManager = new EventManager();
   entityManager = new EntityManager(eventManager);
@@ -57,5 +54,5 @@ void renderRenderablesTest() {
   scene.beginDraw();
   //println("Render System Update");
   renderSystem.update(1);
-  scene.endDraw();
+  scene.endDraw(); 
 }
