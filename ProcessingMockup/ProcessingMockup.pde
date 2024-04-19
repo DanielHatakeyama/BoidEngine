@@ -8,14 +8,16 @@ EventManager eventManager; // this should eventually be created in the world and
 PGraphics scene;
 EntityManager entityManager;
 RenderSystem renderSystem;
+PhysicsSystem physicsSystem;
 
 
-public void mouseDragged() {
+public void mousePressed() {
   println("Mouse Pressed");
   entityManager.buildEntity()
     .with(new Transform(mouseX, mouseY))
     .with(new Renderer(new CircleRenderFunction()))
     .with(new Tag("circle"))
+    .with(new RigidBody())
     .create();
 }
 
@@ -29,30 +31,32 @@ public void setup() {
   eventManager = new EventManager();
   entityManager = new EntityManager(eventManager);
   renderSystem = new RenderSystem(eventManager, scene);
+  physicsSystem = new PhysicsSystem(eventManager);
+  
+  drawBackground();
   
 }
-
 
 public void draw() {
   // For each boid
   // Do the rules it needs to do
   // Then render
+  
+  // update
+  
+  physicsSystem.update(.01);
+  
 
-  drawBackground();
+  scene.beginDraw();
+  scene.background(0);
+  renderSystem.update(1);
+  scene.endDraw();
 
-  renderRenderablesTest();
   image(scene, 0, 0);
+  
+  
 }
-
 
 void drawBackground() {
   background(#9CBFED);
-}
-
-
-void renderRenderablesTest() {
-  scene.beginDraw();
-  //println("Render System Update");
-  renderSystem.update(1);
-  scene.endDraw(); 
 }

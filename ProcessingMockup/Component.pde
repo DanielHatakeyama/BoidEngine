@@ -121,9 +121,9 @@ public class Renderer implements Component {
 
 public class RigidBody implements Component {
   
-  public PVector velocity = new PVector(0,0);
-  public PVector acceleration = new PVector(0,0);
-  public float mass = 1;
+  private PVector velocity = new PVector(0,0);
+  private PVector acceleration = new PVector(0,0);
+  private float mass = 1;
   
   public boolean isStatic = false;
   
@@ -140,10 +140,15 @@ public class RigidBody implements Component {
   }
   
   public void update(int deltaTime) {
+    
     if (isStatic) return;
     velocity.add(PVector.mult(acceleration, deltaTime));
     acceleration.mult(0); // Clear acc after each update, i guess unless it is gravity but we aint doing that, there is a better way to do this i think
+    
   }
   
-}power
+  public PVector getVelocity() {
+    return this.velocity.copy();
+  }
   
+}

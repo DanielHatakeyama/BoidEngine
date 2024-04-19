@@ -46,16 +46,16 @@ public class RenderSystem extends System {
   }
 
   @Override
-  protected boolean matchesSystemCriteria(ComponentEvent event) {
+    protected boolean matchesSystemCriteria(ComponentEvent event) {
     return event.isComponentType(Renderer.class);
   }
 
   @Override
     protected void onComponentAdded(Entity entity, Component component) {
-      Integer ID = entity.getID();
-      transforms.put(ID, entity.getComponent(Transform.class));
-      renderers.put(ID, (Renderer)component);
-      println("Adding id:" + ID + " to renderers.");
+    Integer ID = entity.getID();
+    transforms.put(ID, entity.getComponent(Transform.class));
+    renderers.put(ID, (Renderer)component);
+    println("Adding id:" + ID + " to renderers.");
   }
 
   @Override
@@ -64,15 +64,15 @@ public class RenderSystem extends System {
   }
 
   @Override
-  public void update(float deltaTime) {
+    public void update(float deltaTime) {
     for (Integer id : renderers.keySet()) {
       println("Updating rendererSystem (in loop) : " + id);
       Renderer renderer = this.renderers.get(id);
       Transform transform = this.transforms.get(id);
-      
+
       if ((renderer == null) || (transform == null)) continue; // TODO ben, make this print a warning / return an exception
-      
-      renderer.render(renderContext,transform);
+
+      renderer.render(renderContext, transform);
     }
   }
 }
@@ -90,38 +90,43 @@ public class PhysicsSystem extends System {
   }
 
   @Override
-  protected boolean matchesSystemCriteria(ComponentEvent event) {
+    protected boolean matchesSystemCriteria(ComponentEvent event) {
     return event.isComponentType(RigidBody.class);
   }
 
   @Override
     protected void onComponentAdded(Entity entity, Component component) {
-      Integer ID = entity.getID();
-      transforms.put(ID, entity.getComponent(Transform.class));
-      rigidBodies.put(ID, (RigidBody)component);
-      println("Adding id:" + ID + " to rigidbody.");
+    Integer ID = entity.getID();
+    transforms.put(ID, entity.getComponent(Transform.class));
+    rigidBodies.put(ID, (RigidBody)component);
+    println("Adding id:" + ID + " to rigidbody.");
   }
 
   @Override
     protected void onComponentRemoved(Entity entity, Component component) {
-    // Implementation for removing a component from the rendering system
+    // Implementation for removing a component from the rendering system // todo for ben
   }
 
   @Override
-  public void update(float deltaTime) {
+    public void update(float deltaTime) {
     println("Updating physicsSystem");
     for (Integer id : rigidBodies.keySet()) {
-      
+
       RigidBody rigidBody = this.rigidBodies.get(id);
       Transform transform = this.transforms.get(id);
       
+
       if ((rigidBody == null) || (transform == null)) continue; // TODO for ben, do the same thing for this one.
       
+      rigidBody.applyForce(new PVector(1,0) );
       
+      rigidBody.update(1);
+      
+      PVector velocity = rigidBody.getVelocity();
+      PVector moveAmount = PVector.mult(rigidBody.getVelocity(), deltaTime);
+      
+      transform.moveBy(moveAmount);
       
     }
   }
 }
-
-
-                                                                                   
