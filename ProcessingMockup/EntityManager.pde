@@ -21,7 +21,15 @@ public class EntityManager {
 
   // Create a new entity with an automatically generated ID
   public EntityBuilder buildEntity() {
-    return new EntityBuilder(this, nextEntityId++);
+    return new EntityBuilder(this, nextEntityId++, null);
+    
+  }
+  public EntityBuilder buildEntity(String... tags) {
+    List<String> tagList = new ArrayList<>();
+    for (String tag : tags) {
+      tagList.add(tag);
+    }
+    return new EntityBuilder(this, nextEntityId++, tagList);
   }
 
   // Method to add the created entity to the entity manager
@@ -54,24 +62,22 @@ public class EntityManager {
 
     // can be thought of set component, can explore this later to make it clearer and avoid resetting if that is a concern
     entity.addComponent(component);
-    
+
     println("Notifying Subscribers of Component Added");
     eventManager.notifySubscribers(new ComponentAddedEvent(entity, component));
-    
   }
-  
-  
+
+
 
   // Remove a component from an entity
   public <T extends Component> void removeComponent(int entityId, Class<T> componentClass) {
-    
+
     Entity entity = entities.get(entityId);
     if (entity == null) return;
-    
+
     Component component = entity.getComponent(componentClass);
     eventManager.notifySubscribers(new ComponentRemovedEvent(entity, component));
     entity.removeComponent(componentClass);
-
   }
 
   // Get a component attached to an entity // TODO might need to make some error catching

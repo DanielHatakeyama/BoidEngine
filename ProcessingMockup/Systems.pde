@@ -1,5 +1,10 @@
-import java.util.Set; //<>//
+import java.util.Set; //<>// //<>//
 import java.util.HashSet;
+
+// TODO refactor systems such that there is only ever one hash map of each component list.
+// this should actually be not impossible to do!!!
+// Just store the components somewhere and have the event system behave a bit differently to track the references to the relevant component list
+// This is a good idea.
 
 public abstract class System {
   protected EventManager eventManager;
@@ -13,7 +18,7 @@ public abstract class System {
 
   public void setEventManager(EventManager eventManager) {
     this.eventManager = eventManager;
-    
+
     // Lambdas for event
     this.eventManager.subscribe(ComponentAddedEvent.class, event -> handleComponentAdded(event));
     this.eventManager.subscribe(ComponentRemovedEvent.class, event -> handleComponentRemoved(event));
@@ -39,6 +44,15 @@ public abstract class System {
   public abstract void update(float deltaTime);
 }
 
+
+
+// TODO THE RENDERER NEEDS SOME MAJOR REFACTORS TO BE BETTER:
+/* need to make it so all rederable entities are prerendered with a pgraphics object
+ * separate this by layers, make it so static is done first
+ * proper background layers
+ * clear or background on a given render context
+ * keep the high level render context, but find way to branch and make more dynmically
+ */
 // Finally im coding and it doesnt have to be perfect
 // TODO EXTEND THE LOGIC TO MAKE IT WORK WITH MULTIPLE RENDER CONTEXTS, SEPARATE LAYERS
 public class RenderSystem extends System {
@@ -73,10 +87,12 @@ public class RenderSystem extends System {
 
   // TODO TAKE OUT THE LOGIC FOR INDIVIDUAL RENDER CONTEXT
   @Override
-  public void update(float deltaTime) {
-    
+    public void update(float deltaTime) {
+
+    if (renderers.size() == 0) return;
+
     //println("RenderSystem updating...");
-    
+
     renderContext.beginDraw();
     renderContext.background(#9CBFED);
 
@@ -89,12 +105,10 @@ public class RenderSystem extends System {
 
       renderer.render(renderContext, transform);
     }
-    
+
     renderContext.endDraw();
     image(renderContext, 0, 0);
   }
-  
-  
 }
 
 
@@ -124,19 +138,19 @@ public class PhysicsSystem extends System {
   }
 
   @Override
-    public void update(float deltaTime) {
+  public void update(float deltaTime) {
+    
+    if (transforms.size() == 0) return; // maybe amake a better way to do this check for each system in tyhe system manager TODO mild importance
     //println("Updating physicsSystem");
+
     for (Integer id : rigidBodies.keySet()) {
-      
+
       //println("PhysicsSystem updating...");
 
       RigidBody rigidBody = this.rigidBodies.get(id);
       Transform transform = this.transforms.get(id);
 
-
       if ((rigidBody == null) || (transform == null)) continue; // TODO for ben, do the same thing for this one.
-
-      rigidBody.applyForce(new PVector(1, 0) );
 
       rigidBody.update(deltaTime);
 

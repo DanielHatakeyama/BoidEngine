@@ -18,26 +18,26 @@ public interface Component {
   }
 }
 
-// Tags provide a unique identification system of entity types. This is to distinguish two entities that are different but share the same set of components
-public class Tag implements Component {
-  private String tag;
+//// Tags provide a unique identification system of entity types. This is to distinguish two entities that are different but share the same set of components
+//public class Tag implements Component {
+//  private String tag;
 
-  public Tag() {
-    this.setTag("default");
-  }
+//  public Tag() {
+//    this.setTag("default");
+//  }
 
-  public Tag(String tag) {
-    this.setTag(tag);
-  }
+//  public Tag(String tag) {
+//    this.setTag(tag);
+//  }
 
-  public String getTag() {
-    return tag;
-  }
+//  public String getTag() {
+//    return tag;
+//  }
 
-  public void setTag(String tag) {
-    this.tag = tag.toLowerCase();
-  }
-}
+//  public void setTag(String tag) {
+//    this.tag = tag.toLowerCase();
+//  }
+//}
 
 public class Transform implements Component {
 
@@ -94,6 +94,10 @@ public class Transform implements Component {
   public void rotateBy(float angle) {
     direction.rotate(angle);
   }
+
+  public float distanceTo(Transform other) {
+    return this.position.dist(other.position);
+  }
 }
 
 
@@ -120,35 +124,37 @@ public class Renderer implements Component {
 
 
 public class RigidBody implements Component {
-  
-  private PVector velocity = new PVector(0,0);
-  private PVector acceleration = new PVector(0,0);
+
+  private PVector velocity = new PVector(0, 0);
+  private PVector acceleration = new PVector(0, 0);
   private float mass = 1;
-  
+
   public boolean isStatic = false;
-  
+
   public RigidBody() {
     // Empty default constructor
     // TODO make a few more constuctors for init velocity and mass, no init acceleration
     // TODO make a few more changes to also allow for creation of static bodies.
   }
-  
+
   public void applyForce(PVector force) {
+    
+    // Return early if needed
     if (isStatic) return;
+    if (force.x == 0 && force.y == 0) return; // no work for 3d
+    
     PVector forceAcc = PVector.div(force, mass);
     acceleration.add(forceAcc);
   }
-  
+
   public void update(float deltaTime) {
-    
+
     if (isStatic) return;
     velocity.add(PVector.mult(acceleration, deltaTime));
     acceleration.mult(0); // Clear acc after each update, i guess unless it is gravity but we aint doing that, there is a better way to do this i think
-    
   }
-  
+
   public PVector getVelocity() {
     return this.velocity.copy();
   }
-  
 }

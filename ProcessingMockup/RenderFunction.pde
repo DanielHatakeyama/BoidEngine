@@ -1,10 +1,12 @@
 
+// TODO REFACTOR SO IT EXISTS AS A SAVED PGRAPHICS OBJECT THAT CAN BE UPDATED / SET AT TIMES, BUT STAYS SAME I CAN THINK THIS THROUGH LATER:
+
+
 public interface RenderFunction {
   void render(PGraphics renderContext, Transform transform);
 }
 
 public class CircleRenderFunction implements RenderFunction {
-
 
 
   void render(PGraphics renderContext, Transform transform) {

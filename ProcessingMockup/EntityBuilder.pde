@@ -8,10 +8,18 @@ public class EntityBuilder {
 
 
   // When builder is constructed in the context of the entity manager class, we create new entity with the genrated id
-  public EntityBuilder(EntityManager entityManager, int entityId) {
+  public EntityBuilder(EntityManager entityManager, int entityId, List<String> tags) {
     this.entityManager = entityManager;
     this.entity = new Entity(entityId);
     this.componentsToNotify = new ArrayList<>();
+    
+    // TODO SCUFFED
+    // Add tags - TODO this can be made way better
+    if (tags != null) {
+      for (String tag : tags) {
+        entity.addTag(tag);
+      }
+    }
 
     //// Transform and Tag components are being added by default
     //Transform defaultTransform = new Transform();  // Example: create a default transform

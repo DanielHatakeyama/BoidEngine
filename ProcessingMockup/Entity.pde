@@ -74,14 +74,14 @@ public class Entity {
 
   // ---------- Tag Handling ---------- //
   public void addTag(String tag) {
-    tags.add(tag);
+    tags.add(tag.toUpperCase());
   }
   public void removeTag(String tag) {
     tags.remove(tag);
   }
 
   public boolean hasTag(String tag) {
-    return tags.contains(tag);
+    return tags.contains(tag.toUpperCase());
   }
 
   public Set<String> getTags() {
