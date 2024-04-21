@@ -26,7 +26,7 @@ public void setup() {
   // TODO add the background as a game object
   // TODO refactor render system to draw by layers
   systemManager.addSystem(new BoidSystem());
-  systemManager.addSystem(new BindCanvasWithForce(100f, 50f));
+  systemManager.addSystem(new BindCanvasWithForce(150f, 50f));
   systemManager.addSystem(new BindCanvasWithTeleport());
   systemManager.addSystem(new PhysicsSystem());
   systemManager.addSystem(new RenderSystem());
@@ -47,12 +47,22 @@ public void draw() {
   // Update all systems
   systemManager.updateAll(deltaTime);
 }
-
 public void mousePressed() {
   // Build gameobject // todo for ben: make this into a factory pattern, entity factory using the entitymanager.buildentity code to group stuff like build circle, build obstacle, build boid etc.
+  buildBoid();
+}
+
+public void mouseDragged() {
+  // Build gameobject // todo for ben: make this into a factory pattern, entity factory using the entitymanager.buildentity code to group stuff like build circle, build obstacle, build boid etc.
+  buildBoid();
+}
+
+
+public void buildBoid() {
   entityManager.buildEntity("boid", "bindcanvaswithforce")
     .with(new Transform(mouseX, mouseY))
     .with(new Renderer(new CircleRenderFunction()))
+    .with(new ColorComponent() )
     .with(new RigidBody())
     .create();
 }

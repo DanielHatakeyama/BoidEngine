@@ -4,13 +4,13 @@ public class BoidSystem extends System {
   private Map<Integer, RigidBody> rigidBodies = new HashMap<>();
 
   // Data Members / Setting Variables
-  private float perceptionRadius = 200f;
+  private float perceptionRadius = 110f;
   private float minSeparationPercent = 0.25f;
 
   // Force Scalars
-  private float separationScale = 300f;
-  private float cohesionScale = 2f;
-  private float alignmentScale = 20f;
+  private float separationScale = 5000f;
+  private float cohesionScale = 1f;
+  private float alignmentScale = 1f;
 
   public BoidSystem() {
   }
@@ -102,7 +102,7 @@ public class BoidSystem extends System {
       rigidBody.applyForce(alignmentForce);
 
       // Ensure minimum velocity
-      float minVelocity = 10.0f;
+      float minVelocity = 100.0f;
       if (rigidBody.getVelocity().mag() < minVelocity) {
         rigidBody.setVelocity(rigidBody.getVelocity().setMag(minVelocity));
       }
