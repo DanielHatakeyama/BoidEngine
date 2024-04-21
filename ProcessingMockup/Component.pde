@@ -157,4 +157,8 @@ public class RigidBody implements Component {
   public PVector getVelocity() {
     return this.velocity.copy();
   }
+  
+  public void setVelocity(PVector velocity) {
+    this.velocity = velocity;
+  }
 }

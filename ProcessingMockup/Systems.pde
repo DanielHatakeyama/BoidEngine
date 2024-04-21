@@ -1,4 +1,4 @@
-import java.util.Set; //<>// //<>//
+import java.util.Set; //<>//
 import java.util.HashSet;
 
 // TODO refactor systems such that there is only ever one hash map of each component list.
@@ -111,7 +111,6 @@ public class RenderSystem extends System {
   }
 }
 
-
 // Finally im coding and it doesnt have to be perfect
 public class PhysicsSystem extends System {
 
@@ -158,6 +157,118 @@ public class PhysicsSystem extends System {
       PVector moveAmount = PVector.mult(velocity, deltaTime);
 
       transform.moveBy(moveAmount);
+    }
+  }
+}
+
+public class BindCanvasWithForce extends System {
+
+  private Map<Integer, Transform> transforms = new HashMap<>();
+  private Map<Integer, RigidBody> rigidBodies = new HashMap<>();
+
+  private float bindForce = 0.5f;
+  private float innerBoundary = 50f;
+
+  public BindCanvasWithForce(float bindForce, float innerBoundaryPx) {
+    this.bindForce = bindForce;
+    this.innerBoundary = innerBoundaryPx;
+  }
+
+  @Override
+    protected boolean matchesSystemCriteria(ComponentEvent event) {
+    return event.isComponentType(RigidBody.class) && event.entity.hasTag("bindcanvaswithforce");
+  }
+
+  @Override
+    protected void onComponentAdded(Entity entity, Component component) {
+
+    Integer ID = entity.getID();
+    transforms.put(ID, entity.getComponent(Transform.class));
+    rigidBodies.put(ID, (RigidBody)component);
+  }
+
+  @Override
+    protected void onComponentRemoved(Entity entity, Component component) {
+    // Implementation for removing a component from the rendering system // todo for ben, ben thuis is all u buddy
+  }
+
+  @Override
+    public void update(float deltaTime) {
+
+    for (Integer id : transforms.keySet()) {
+      PVector position = this.transforms.get(id).position;
+      RigidBody rigidBody = this.rigidBodies.get(id);
+
+      // Check right boundary
+      if (position.x > width - innerBoundary) {
+        rigidBody.applyForce(new PVector(-bindForce, 0)); // Push left
+      }
+      // Check left boundary
+      if (position.x < innerBoundary) {
+        rigidBody.applyForce(new PVector(bindForce, 0)); // Push right
+      }
+      // Check bottom boundary
+      if (position.y > height - innerBoundary) {
+        rigidBody.applyForce(new PVector(0, -bindForce)); // Push up
+      }
+      // Check top boundary
+      if (position.y < innerBoundary) {
+        rigidBody.applyForce(new PVector(0, bindForce)); // Push down
+      }
+    }
+  }
+}
+
+
+public class BindCanvasWithTeleport extends System {
+
+  private Map<Integer, Transform> transforms = new HashMap<>();
+  private Map<Integer, RigidBody> rigidBodies = new HashMap<>();
+
+  @Override
+    protected boolean matchesSystemCriteria(ComponentEvent event) {
+    return event.isComponentType(RigidBody.class) && event.entity.hasTag("bindcanvaswithteleport");
+  }
+
+  @Override
+    protected void onComponentAdded(Entity entity, Component component) {
+
+    Integer ID = entity.getID();
+    transforms.put(ID, entity.getComponent(Transform.class));
+    rigidBodies.put(ID, (RigidBody)component);
+  }
+
+  @Override
+    protected void onComponentRemoved(Entity entity, Component component) {
+    // Implementation for removing a component from the rendering system // todo for ben, ben thuis is all u buddy
+  }
+
+  @Override
+    public void update(float deltaTime) {
+
+    for (Integer id : transforms.keySet()) {
+      Transform transform = this.transforms.get(id);
+      PVector position = transform.position;
+      PVector scale = transform.scale;
+      RigidBody rigidBody = this.rigidBodies.get(id);  // Assuming you're using this for something
+
+      // Check if the object exceeds the right boundary
+      if (position.x > width - scale.x) {
+        transform.setPosition(new PVector(-scale.x, position.y));
+      }
+      // Check if the object goes beyond the left boundary
+      if (position.x < -scale.x) {
+        transform.setPosition(new PVector(width + scale.x, position.y));
+      }
+
+      // Check if the object exceeds the bottom boundary
+      if (position.y > height - scale.y) {
+        transform.setPosition(new PVector(position.x, -scale.y));
+      }
+      // Check if the object goes above the top boundary
+      if (position.y < -scale.y) {
+        transform.setPosition(new PVector(position.x, height + scale.y));
+      }
     }
   }
 }
