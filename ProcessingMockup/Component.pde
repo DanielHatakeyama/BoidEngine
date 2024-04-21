@@ -111,7 +111,7 @@ public class Renderer implements Component {
   // Make set render function / get render function / remove render function
 
   public void render(PGraphics renderContext, Transform transform) {
-    println("In render component.render");
+    //println("In render component.render");
     if (renderFunction != null) {
       renderFunction.render(renderContext, transform);
     }
@@ -139,7 +139,7 @@ public class RigidBody implements Component {
     acceleration.add(forceAcc);
   }
   
-  public void update(int deltaTime) {
+  public void update(float deltaTime) {
     
     if (isStatic) return;
     velocity.add(PVector.mult(acceleration, deltaTime));

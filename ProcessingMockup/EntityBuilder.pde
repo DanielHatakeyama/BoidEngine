@@ -20,12 +20,12 @@ public class EntityBuilder {
     //this.componentsToNotify.add(defaultTag);
 
     // TODO add transform and tag components by default since all entities should have a default tag and a transform.
-    println("Building Entity");
+    print("EntityBuilder: ID " + entity.getID());
   }
 
   // Add methods to configure the entity as needed
   public EntityBuilder with(Component component) {
-    println("With Component: " + component.getClass().getSimpleName());
+    print();
     // TODO make this so all of the events are done after create is called in a buffer IMPORTANT
     this.entity.addComponent(component);
     this.componentsToNotify.add(component);
@@ -33,14 +33,27 @@ public class EntityBuilder {
   }
 
   // Method to build and return the created entity
+  // printing / logging is handled, it is jank
   public Entity create() {
     
     entityManager.addEntity(entity);
 
+    // Logging logic for prettyness
+    print(" | with components (");
+    boolean isFirst = true;
+    
     for (Component component : componentsToNotify) {
+      // Actually important, call events of component added.
       eventManager.notifySubscribers(new ComponentAddedEvent(entity, component));
+      
+      // Printing logic
+      print((isFirst ? "" : ", ") + component.getClass().getSimpleName());
+      isFirst = false;
     }
-
+    
+    // End printing component logic
+    println(") - Created");
+    
     return entity;
   }
 }

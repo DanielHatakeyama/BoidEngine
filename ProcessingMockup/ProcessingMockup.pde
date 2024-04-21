@@ -5,58 +5,52 @@
 // default settings like default boid color, etc and then just choie of boid color on top of that like user defined but can reset to normal
 
 EventManager eventManager; // this should eventually be created in the world and be dependency injected all the way down as needed, specifically to system entity managers
-PGraphics scene;
+
 EntityManager entityManager;
-RenderSystem renderSystem;
-PhysicsSystem physicsSystem;
+SystemManager systemManager;
+
+float lastFrameTime;
+
+public void setup() {
+
+  size(1600, 1000);
+
+  // Setup Main Systems (TODO make this encapsulated in a world object or something) (This would hold the last frame time and stuff.
+  eventManager = new EventManager();
+  systemManager = new SystemManager(eventManager);
+  entityManager = new EntityManager(eventManager);
 
 
-public void mousePressed() {
-  println("Mouse Pressed");
+  // The system manager can be refactored with a factory / builder if desired, minimal priority
+  // TODO refactor system manager with a priority queue
+  // TODO add the background as a game object
+  // TODO refactor render system to draw by layers
+  systemManager.addSystem(new PhysicsSystem());
+  systemManager.addSystem(new RenderSystem());
+
+  println("Setup()" + " [" + width + ", " + height + "] - Complete");
+  
+  lastFrameTime = millis() / 1000f;
+}
+
+
+public void draw() {
+
+  // Calculate and update delta time
+  float currentTime = millis() / 1000f;
+  float deltaTime = currentTime - lastFrameTime;
+  lastFrameTime = currentTime;
+  
+  // Update all systems
+  systemManager.updateAll(deltaTime);
+}
+
+public void mouseDragged() {
+  // Build gameobject // todo for ben: make this into a factory pattern, entity factory using the entitymanager.buildentity code to group stuff like build circle, build obstacle, build boid etc.
   entityManager.buildEntity()
     .with(new Transform(mouseX, mouseY))
     .with(new Renderer(new CircleRenderFunction()))
     .with(new Tag("circle"))
     .with(new RigidBody())
     .create();
-}
-
-public void setup() {
-
-  println("Setup");
-
-  size(1600, 1000);
-  scene = createGraphics(width, height);
-  
-  eventManager = new EventManager();
-  entityManager = new EntityManager(eventManager);
-  renderSystem = new RenderSystem(eventManager, scene);
-  physicsSystem = new PhysicsSystem(eventManager);
-  
-  drawBackground();
-  
-}
-
-public void draw() {
-  // For each boid
-  // Do the rules it needs to do
-  // Then render
-  
-  // update
-  
-  physicsSystem.update(.01);
-  
-
-  scene.beginDraw();
-  scene.background(0);
-  renderSystem.update(1);
-  scene.endDraw();
-
-  image(scene, 0, 0);
-  
-  
-}
-
-void drawBackground() {
-  background(#9CBFED);
 }
