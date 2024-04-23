@@ -1,4 +1,4 @@
-import java.util.HashMap; //<>// //<>//
+import java.util.HashMap; //<>//
 import java.util.Map;
 
 // TODO Explain later, main idea is give entity an id so they can be stored in LUT

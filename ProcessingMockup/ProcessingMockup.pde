@@ -26,7 +26,7 @@ public void setup() {
   // TODO add the background as a game object
   // TODO refactor render system to draw by layers
   systemManager.addSystem(new BoidSystem());
-  systemManager.addSystem(new BindCanvasWithForce(150f, 50f));
+  systemManager.addSystem(new BindCanvasWithForce(450f, 50f));
   systemManager.addSystem(new BindCanvasWithTeleport());
   systemManager.addSystem(new PhysicsSystem());
   systemManager.addSystem(new RenderSystem());
@@ -59,10 +59,13 @@ public void mouseDragged() {
 
 
 public void buildBoid() {
+  
+  
   entityManager.buildEntity("boid", "bindcanvaswithforce")
     .with(new Transform(mouseX, mouseY))
-    .with(new Renderer(new CircleRenderFunction()))
-    .with(new ColorComponent() )
+    .with(new Renderer(new BoidTriangle()))
     .with(new RigidBody())
+    //.with(new ColorComponent(color(random(255),random(255),random(255)), color(random(255),random(255),random(255),0)))
+    .with(new ColorComponent(color(255,0,0), color(0)))
     .create();
 }

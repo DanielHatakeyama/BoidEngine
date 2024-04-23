@@ -5,6 +5,7 @@ public class BoidSystem extends System {
 
   // Data Members / Setting Variables
   private float perceptionRadius = 110f;
+  private float basePerceptionRadius = 110;
   private float minSeparationPercent = 0.25f;
 
   // Force Scalars
@@ -16,7 +17,11 @@ public class BoidSystem extends System {
   }
 
   public BoidSystem(float perceptionRadius, float separationScale, float cohesionScale, float alignmentScale, float minSeparationPercent) {
+    this.basePerceptionRadius = perceptionRadius;
     this.perceptionRadius = perceptionRadius;
+    float adjustment = random(-5, 5);
+    this.perceptionRadius += adjustment;
+    
     this.separationScale = separationScale;
     this.cohesionScale = cohesionScale;
     this.alignmentScale = alignmentScale;
@@ -69,7 +74,7 @@ public class BoidSystem extends System {
             numNeighbors++;
 
             // Separation
-            if (distance < minSeparationPercent * perceptionRadius) {
+            if (distance < (minSeparationPercent * basePerceptionRadius)) {
               difference.normalize().div(distance);  // Stronger repulsion at closer distances
               separationForce.add(difference);
             }

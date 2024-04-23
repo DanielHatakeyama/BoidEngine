@@ -1,4 +1,4 @@
-import java.util.Set; //<>// //<>//
+import java.util.Set; //<>//
 import java.util.HashSet;
 
 // TODO refactor systems such that there is only ever one hash map of each component list.
@@ -62,6 +62,7 @@ public class RenderSystem extends System {
   // ID - Component pairs -> Decouples entity from the system - component calculation
   private Map<Integer, Transform> transforms = new HashMap<>();
   private Map<Integer, Renderer> renderers = new HashMap<>();
+  private Map<Integer, ColorComponent> colorComponents = new HashMap<>();
 
   public RenderSystem() {
     this.renderContext = createGraphics(width, height);
@@ -75,8 +76,18 @@ public class RenderSystem extends System {
   @Override
     protected void onComponentAdded(Entity entity, Component component) {
     Integer ID = entity.getID();
-    transforms.put(ID, entity.getComponent(Transform.class));
-    renderers.put(ID, (Renderer)component);
+    // TODO IMPORTANT FIX ANY POTENTAIL BIG ERROR / CRASH HERE
+    Transform t = entity.getComponent(Transform.class);
+    Renderer r = (Renderer)component;
+    ColorComponent c = entity.getComponent(ColorComponent.class);
+
+    // Errors
+    if (t==null) return;
+    if (r==null) return;
+    transforms.put(ID, t);
+    renderers.put(ID, r);
+    if (c!=null) colorComponents.put(ID, c);
+
     //println("Adding id:" + ID + " to renderers.");
   }
 
@@ -100,10 +111,15 @@ public class RenderSystem extends System {
 
       Renderer renderer = this.renderers.get(id);
       Transform transform = this.transforms.get(id);
+      ColorComponent colorComponent = this.colorComponents.get(id);
 
       if ((renderer == null) || (transform == null)) continue; // TODO ben, make this print a warning / return an exception
 
-      renderer.render(renderContext, transform);
+      if (colorComponent != null) {
+        renderer.render(renderContext, transform, colorComponent);
+      } else {
+        renderer.render(renderContext, transform);
+      }
     }
 
     renderContext.endDraw();
@@ -137,8 +153,8 @@ public class PhysicsSystem extends System {
   }
 
   @Override
-  public void update(float deltaTime) {
-    
+    public void update(float deltaTime) {
+
     if (transforms.size() == 0) return; // maybe amake a better way to do this check for each system in tyhe system manager TODO mild importance
     //println("Updating physicsSystem");
 
@@ -155,6 +171,7 @@ public class PhysicsSystem extends System {
 
       PVector velocity = rigidBody.getVelocity();
       PVector moveAmount = PVector.mult(velocity, deltaTime);
+      transform.rotateTo(velocity);
 
       transform.moveBy(moveAmount);
     }
