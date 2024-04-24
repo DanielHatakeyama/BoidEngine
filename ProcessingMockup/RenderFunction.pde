@@ -54,7 +54,7 @@ public class CircleRenderFunction implements RenderFunction {
 public class BoidTriangle implements RenderFunction {
   
   PVector lookDirection = new PVector(random(-.4f, .4f), random(-.2f, .5f));
-  float lookScale = random(0,1);
+  float lookScale = random(.3f,1);
   float lookSpeed = 0.1f;
   
   void render(PGraphics renderContext, Transform transform) {
@@ -96,9 +96,10 @@ public class BoidTriangle implements RenderFunction {
 
     
 
-    float eyeOuterDiameter = 10f * baseW;
-    float eyeInnerDiameter = eyeOuterDiameter * 0.4f;
+    float eyeOuterDiameter = .8f * baseW;
+    float eyeInnerDiameter = eyeOuterDiameter * 0.65f;
     float maxLookAmount = eyeOuterDiameter - eyeInnerDiameter;
+    float lookAmount = lookScale * maxLookAmount;
     PVector lookVector = PVector.mult(lookDirection, lookAmount);
 
     float eyeBridgeWidth = eyeOuterDiameter * 0.7f;
