@@ -205,3 +205,13 @@ public class RigidBody implements Component {
     this.velocity = velocity;
   }
 }
+
+public class ClanComponent implements Component {
+    public String name;
+    public color clanColor;
+
+    public ClanComponent(String name, color clanColor) {
+        this.name = name;
+        this.clanColor = clanColor;
+    }
+}

@@ -20,12 +20,22 @@ public void setup() {
   systemManager = new SystemManager(eventManager);
   entityManager = new EntityManager(eventManager);
 
-
   // The system manager can be refactored with a factory / builder if desired, minimal priority
   // TODO refactor system manager with a priority queue
   // TODO add the background as a game object
   // TODO refactor render system to draw by layers
-  systemManager.addSystem(new BoidSystem());
+
+  // Initializing the BoidSystem with specific behavioral metrics
+  systemManager.addSystem(new BoidSystem(
+      110f,              // basePerceptionRadius
+      4000f,             // separationScale
+      1.0f,              // cohesionScale
+      1.1f,              // alignmentScale
+      0.30f,             // minSeparationPercent
+      90.0f,              // minVelocity
+      25f, 25f          // Perception Random Adjustment Range (more randomness)
+  ));
+
   systemManager.addSystem(new BindCanvasWithForce(450f, 50f));
   systemManager.addSystem(new BindCanvasWithTeleport());
   systemManager.addSystem(new PhysicsSystem());
@@ -48,24 +58,68 @@ public void draw() {
   systemManager.updateAll(deltaTime);
 }
 public void mousePressed() {
-  // Build gameobject // todo for ben: make this into a factory pattern, entity factory using the entitymanager.buildentity code to group stuff like build circle, build obstacle, build boid etc.
-  buildBoid();
+  if (mouseButton == LEFT) buildBoidClanRed();
+  if (mouseButton == RIGHT) buildBoidClanBlue();
+  if (mouseButton == CENTER) buildBoidClanGreen();
 }
 
 public void mouseDragged() {
-  // Build gameobject // todo for ben: make this into a factory pattern, entity factory using the entitymanager.buildentity code to group stuff like build circle, build obstacle, build boid etc.
-  buildBoid();
+  if (mouseButton == LEFT) buildBoidClanRed();
+  if (mouseButton == RIGHT) buildBoidClanBlue();
+  if (mouseButton == CENTER) buildBoidClanGreen();
 }
 
-
 public void buildBoid() {
-  
-  
   entityManager.buildEntity("boid", "bindcanvaswithforce")
     .with(new Transform(mouseX, mouseY))
     .with(new Renderer(new BoidTriangle()))
     .with(new RigidBody())
     //.with(new ColorComponent(color(random(255),random(255),random(255)), color(random(255),random(255),random(255),0)))
-    .with(new ColorComponent(color(255,0,0), color(0)))
+    .with(new ColorComponent(color(0,255,0), color(0)))
     .create();
+}
+
+public void buildBoidClanRed() {
+
+  color primary = color(255,0,0);
+  color stroke = color(0);
+  
+  entityManager.buildEntity("boid", "bindcanvaswithforce")
+    .with(new Transform(mouseX, mouseY))
+    .with(new Renderer(new BoidTriangle()))
+    .with(new RigidBody())
+    .with(new ClanComponent("Red Clan", primary))
+    .with(new ColorComponent(primary, stroke))
+    .create();
+
+}
+
+public void buildBoidClanBlue() {
+
+  color primary = color(0,0,255);
+  color stroke = color(0);
+  
+  entityManager.buildEntity("boid", "bindcanvaswithforce")
+    .with(new Transform(mouseX, mouseY))
+    .with(new Renderer(new BoidTriangle()))
+    .with(new RigidBody())
+    .with(new ClanComponent("Blue Clan", primary))
+    .with(new ColorComponent(primary, stroke))
+    .create();
+
+}
+
+public void buildBoidClanGreen() {
+
+  color primary = color(30,150,30);
+  color stroke = color(0);
+  
+  entityManager.buildEntity("boid", "bindcanvaswithforce")
+    .with(new Transform(mouseX, mouseY))
+    .with(new Renderer(new BoidTriangle()))
+    .with(new RigidBody())
+    .with(new ClanComponent("Green Clan", primary))
+    .with(new ColorComponent(primary, stroke))
+    .create();
+
 }

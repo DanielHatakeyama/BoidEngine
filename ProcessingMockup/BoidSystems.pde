@@ -2,42 +2,65 @@ public class BoidSystem extends System {
 
   private Map<Integer, Transform> transforms = new HashMap<>();
   private Map<Integer, RigidBody> rigidBodies = new HashMap<>();
+  private Map<Integer, ClanComponent> clans = new HashMap<>();
 
   // Data Members / Setting Variables
   private float perceptionRadius = 110f;
-  private float basePerceptionRadius = 110;
+  private float basePerceptionRadius = 110f;
   private float minSeparationPercent = 0.25f;
+  private float minVelocity = 0f; // ensures min velocity, set manually rn, but this can change easily
+
+  private float minPerceptionAdjustment = 0;
+  private float maxPerceptionAdjustment = 0;
+
+  private float minSeparationDistance = 0.01f;
 
   // Force Scalars
   private float separationScale = 5000f;
   private float cohesionScale = 1f;
   private float alignmentScale = 1f;
 
+  // ---------- Constructors ---------- //
   public BoidSystem() {
   }
 
-  public BoidSystem(float perceptionRadius, float separationScale, float cohesionScale, float alignmentScale, float minSeparationPercent) {
+  public BoidSystem(float perceptionRadius, float separationScale, float cohesionScale, float alignmentScale, float minSeparationPercent, float minVelocity, float minPerceptionAdjustment, float maxPerceptionAdjustment) {
     this.basePerceptionRadius = perceptionRadius;
     this.perceptionRadius = perceptionRadius;
-    float adjustment = random(-5, 5);
+    float adjustment = random(-minPerceptionAdjustment, maxPerceptionAdjustment);
     this.perceptionRadius += adjustment;
     
     this.separationScale = separationScale;
     this.cohesionScale = cohesionScale;
     this.alignmentScale = alignmentScale;
     this.minSeparationPercent = minSeparationPercent;
+    this.minVelocity = minVelocity;
+  }
+
+  public BoidSystem(float perceptionRadius, float separationScale, float cohesionScale, float alignmentScale, float minSeparationPercent, float minVelocity) {
+    this(perceptionRadius, separationScale, cohesionScale, alignmentScale, minSeparationPercent, minVelocity, 0, 0);
   }
 
   @Override
-    protected boolean matchesSystemCriteria(ComponentEvent event) {
-    return event.isComponentType(RigidBody.class) && event.entity.hasTag("boid");
+  protected boolean matchesSystemCriteria(ComponentEvent event) {
+    boolean ifMatches = event.entity.hasTag("boid"); //event.isComponentType(RigidBody.class) && 
+    return ifMatches;
   }
 
   @Override
-    protected void onComponentAdded(Entity entity, Component component) {
+  protected void onComponentAdded(Entity entity, Component component) {
     Integer ID = entity.getID();
-    transforms.put(ID, entity.getComponent(Transform.class));
-    rigidBodies.put(ID, (RigidBody)component);
+
+    // TODO Update the map.component system to work with the tabular setup and only store each map once and automatically
+
+    if (component instanceof Transform) {
+        transforms.put(ID, (Transform) component); // todo change this once transform becomes attached by default to the entity
+    } else if (component instanceof RigidBody) {
+        rigidBodies.put(ID, (RigidBody) component);
+    } else if (component instanceof ClanComponent) {
+        clans.put(ID, (ClanComponent) component);
+    }
+    
   }
 
   @Override
@@ -51,8 +74,13 @@ public class BoidSystem extends System {
 
     // Loop through each boid
     for (Integer id : transforms.keySet()) {
-      RigidBody rigidBody = this.rigidBodies.get(id);
+
+      // Boid Properties
       Transform transform = this.transforms.get(id);
+      PVector position = transform.getPosition();
+      RigidBody rigidBody = this.rigidBodies.get(id);
+      PVector velocity = rigidBody.getVelocity();
+      ClanComponent clan = this.clans.get(id);
 
       PVector separationForce = new PVector(0, 0);
       PVector cohesionForce = new PVector(0, 0);
@@ -62,38 +90,61 @@ public class BoidSystem extends System {
       PVector averagePosition = new PVector(0, 0);
       PVector averageVelocity = new PVector(0, 0);
 
-      // Loop through all transforms to calculate relative forces
-      for (Map.Entry<Integer, Transform> entry : transforms.entrySet()) {
-        if (!entry.getKey().equals(id)) { // Skip the current boid itself
-          Transform neighbor = entry.getValue();
-          PVector difference = PVector.sub(transform.getPosition(), neighbor.getPosition());
-          float distance = difference.mag();
+      // Loop through all neighbors to calculate relative forces
+      for (Integer neighborID : transforms.keySet()) {
 
-          // Check if the current boid is within perception radius
-          if (distance <= perceptionRadius) {
-            numNeighbors++;
+        // Neighbor Properties
+        Transform neighborTransform = this.transforms.get(neighborID);
+        PVector neighborPosition = neighborTransform.getPosition();
+        RigidBody neighborRigidBody = this.rigidBodies.get(neighborID);
+        PVector neighborVelocity = neighborRigidBody.getVelocity();
+        ClanComponent neighborClan = this.clans.get(neighborID);
 
-            // Separation
-            if (distance < (minSeparationPercent * basePerceptionRadius)) {
+        if (id == neighborID) continue; // Skip the current boid itself
+
+        PVector difference = PVector.sub(position, neighborPosition);
+        float distance = PVector.dist(position, neighborPosition);
+
+        if (distance > perceptionRadius) continue; // Skip non neighbors
+
+        // CLAN BEHAVIOR:
+        if ((clan != null) && (neighborClan != null)) {
+          // If different clan, do specific behavior
+          if (clan.name != neighborClan.name) {
+            // C+P separation force, further distance
+            if (distance < (/*minSeparationPercent * */ basePerceptionRadius)) {
               difference.normalize().div(distance);  // Stronger repulsion at closer distances
               separationForce.add(difference);
             }
-
-            // Cohesion
-            averagePosition.add(neighbor.getPosition());
-
-            // Alignment
-            averageVelocity.add(this.rigidBodies.get(entry.getKey()).getVelocity());
+            continue; // After different clan behavior, go next->
           }
         }
+
+        // Check if the current boid is within perception radius
+        numNeighbors++;
+
+        // Separation
+        if (distance < (minSeparationPercent * basePerceptionRadius)) {
+
+          if(distance < minSeparationDistance) distance = minSeparationDistance;
+          
+          difference.normalize().div(distance);  // Stronger repulsion at closer distances
+          separationForce.add(difference);
+        }
+
+        // Cohesion
+        averagePosition.add(neighborPosition);
+
+        // Alignment
+        averageVelocity.add(neighborVelocity);
       }
 
       if (numNeighbors > 0) {
         averagePosition.div(numNeighbors);
-        cohesionForce = PVector.sub(averagePosition, transform.getPosition());
+        cohesionForce = PVector.sub(averagePosition, position);
 
         averageVelocity.div(numNeighbors);
-        alignmentForce = PVector.sub(averageVelocity, rigidBody.getVelocity());
+        alignmentForce = PVector.sub(averageVelocity, velocity);
       }
 
       // Scale all forces
@@ -106,10 +157,12 @@ public class BoidSystem extends System {
       rigidBody.applyForce(cohesionForce);
       rigidBody.applyForce(alignmentForce);
 
-      // Ensure minimum velocity
-      float minVelocity = 100.0f;
-      if (rigidBody.getVelocity().mag() < minVelocity) {
-        rigidBody.setVelocity(rigidBody.getVelocity().setMag(minVelocity));
+      // Update velocity after applying force
+      velocity = rigidBody.getVelocity();
+
+      // Min velocity logic
+      if ((velocity.mag() < minVelocity) && (velocity.mag() > 0)) {
+        rigidBody.setVelocity(velocity.setMag(minVelocity));
       }
     }
   }

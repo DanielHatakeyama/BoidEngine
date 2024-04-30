@@ -56,16 +56,22 @@ public class BoidTriangle implements RenderFunction {
   PVector lookDirection = new PVector(random(-.4f, .4f), random(-.2f, .5f));
   float lookScale = random(.3f,1);
   float lookSpeed = 0.1f;
+
+  // Default colora values (if no color component passed in / colorcomponent == null)
+  color primaryColor = color(255);
+  color secondaryColor = color(0);
   
-  void render(PGraphics renderContext, Transform transform) {
+  void render(PGraphics renderContext, Transform transform, ColorComponent colorComponent) {
     PVector pos = transform.getPosition();
     PVector dir = transform.getDirection();
     PVector scale = transform.getScale();
+    
+    if (colorComponent != null) {
+      this.primaryColor = colorComponent.primary;
+      this.secondaryColor = colorComponent.secondary;
+    }
 
     dir.normalize();
-
-    // Set primary color
-    int primaryColor = color(180, 30, 140);
 
     renderContext.push(); // Save the current state of the renderContext
 
@@ -82,9 +88,7 @@ public class BoidTriangle implements RenderFunction {
     float baseW = 8 * scale.x;
     float baseH = baseW * 2 * scale.y;
 
-    // Set the fill color
     renderContext.fill(primaryColor);
-
     renderContext.noStroke();
 
     // Draw the triangle
@@ -93,8 +97,6 @@ public class BoidTriangle implements RenderFunction {
       baseW / 2, -baseH / 2, // Bottom right vertex
       0, baseH / 2                // Top vertex (apex)
       );
-
-    
 
     float eyeOuterDiameter = .8f * baseW;
     float eyeInnerDiameter = eyeOuterDiameter * 0.65f;
@@ -128,7 +130,8 @@ public class BoidTriangle implements RenderFunction {
     renderContext.pop(); // Restore the original state of the renderContext
   }
 
-  void render(PGraphics renderContext, Transform transform, ColorComponent colorComponent) {
-    render(renderContext, transform);
+  void render(PGraphics renderContext, Transform transform) {
+    ColorComponent colorComponent = null;
+    render(renderContext, transform, colorComponent);
   }
 }
