@@ -1338,6 +1338,25 @@ public class RenderSystem extends System {
   @Override
     protected void onComponentRemoved(Entity entity, Component component) {
     // Implementation for removing a component from the rendering system
+
+    //THAT BOI IS THICCCK - BEN XIANG
+    Integer ID = entity.getID();
+    renderers.remove(ID);
+    transforms.remove(ID);
+    colorComponents.remove(ID);
+
+  }
+
+  public void setRenderContext(PGraphics renderContext) {
+    this.renderContext = renderContext;
+  }
+
+  public PGraphics getRenderContext() {
+    return renderContext;
+  }
+
+  public void setRenderContext(PGraphics renderContext, int x, int y) {
+
   }
 
   // TODO TAKE OUT THE LOGIC FOR INDIVIDUAL RENDER CONTEXT
@@ -1393,7 +1412,11 @@ public class PhysicsSystem extends System {
 
   @Override
     protected void onComponentRemoved(Entity entity, Component component) {
-    // Implementation for removing a component from the rendering system // todo for ben
+
+      //DAMN BOI YOU A WHOLE BAKERY - BEN XIANG
+      Integer ID = entity.getID();
+      transforms.remove(ID);
+      rigidBodies.remove(ID);
   }
 
   @Override
@@ -1450,7 +1473,11 @@ public class BindCanvasWithForce extends System {
 
   @Override
     protected void onComponentRemoved(Entity entity, Component component) {
-    // Implementation for removing a component from the rendering system // todo for ben, ben thuis is all u buddy
+
+    //COME GIVE DADDY SOME LOVE - BEN XIANG
+    Integer ID = entity.getID();
+    transforms.remove(ID);
+    rigidBodies.remove(ID);
   }
 
   @Override
@@ -1501,6 +1528,9 @@ public class BindCanvasWithTeleport extends System {
 
   @Override
     protected void onComponentRemoved(Entity entity, Component component) {
+      Integer ID = entity.getID();
+      transforms.remove(ID);
+      rigidBodies.remove(ID);
     // Implementation for removing a component from the rendering system // todo for ben, ben thuis is all u buddy
   }
 

@@ -1,6 +1,5 @@
 import java.util.Set; //<>//
 import java.util.HashSet;
-
 // TODO refactor systems such that there is only ever one hash map of each component list.
 // this should actually be not impossible to do!!!
 // Just store the components somewhere and have the event system behave a bit differently to track the references to the relevant component list
@@ -88,15 +87,31 @@ public class RenderSystem extends System {
     renderers.put(ID, r);
     if (c!=null) colorComponents.put(ID, c);
 
-    //println("Adding id:" + ID + " to renderers.");
   }
 
   @Override
     protected void onComponentRemoved(Entity entity, Component component) {
-    // Implementation for removing a component from the rendering system
+
+    //THAT BOI IS THICCCK - BEN XIANG
+    Integer ID = entity.getID();
+    renderers.remove(ID);
+    transforms.remove(ID);
+    colorComponents.remove(ID);
+
   }
 
-  // TODO TAKE OUT THE LOGIC FOR INDIVIDUAL RENDER CONTEXT
+  public void setRenderContext(PGraphics renderContext) {
+    this.renderContext = renderContext;
+  }
+
+  public PGraphics getRenderContext() {
+    return renderContext;
+  }
+
+  public void setRenderContext(PGraphics renderContext, int x, int y) {
+
+  }
+
   @Override
     public void update(float deltaTime) {
 
@@ -149,7 +164,11 @@ public class PhysicsSystem extends System {
 
   @Override
     protected void onComponentRemoved(Entity entity, Component component) {
-    // Implementation for removing a component from the rendering system // todo for ben
+
+      //DAMN BOI YOU A WHOLE BAKERY - BEN XIANG
+      Integer ID = entity.getID();
+      transforms.remove(ID);
+      rigidBodies.remove(ID);
   }
 
   @Override
@@ -206,7 +225,11 @@ public class BindCanvasWithForce extends System {
 
   @Override
     protected void onComponentRemoved(Entity entity, Component component) {
-    // Implementation for removing a component from the rendering system // todo for ben, ben thuis is all u buddy
+
+    //COME GIVE DADDY SOME LOVE - BEN XIANG
+    Integer ID = entity.getID();
+    transforms.remove(ID);
+    rigidBodies.remove(ID);
   }
 
   @Override
@@ -257,7 +280,11 @@ public class BindCanvasWithTeleport extends System {
 
   @Override
     protected void onComponentRemoved(Entity entity, Component component) {
-    // Implementation for removing a component from the rendering system // todo for ben, ben thuis is all u buddy
+
+      //WHERE'S MY HUGG @ - BEN XIANG
+      Integer ID = entity.getID();
+      transforms.remove(ID);
+      rigidBodies.remove(ID);
   }
 
   @Override

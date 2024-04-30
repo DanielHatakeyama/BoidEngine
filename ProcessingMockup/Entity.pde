@@ -1,3 +1,7 @@
+/*
+    Design pattern:
+      * ECS
+*/
 import java.util.Map;
 
 public class Entity {

@@ -1,5 +1,7 @@
-
-
+/*
+    Design Pattern:
+      * Strat 
+*/
 
 // TODO REFACTOR SO IT EXISTS AS A SAVED RENDER
 public interface RenderFunction {
