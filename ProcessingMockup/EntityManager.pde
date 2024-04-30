@@ -1,3 +1,8 @@
+/*
+  Design Patter used:
+    * ECS
+    * Dependency Injection
+*/
 import java.util.HashMap; //<>//
 import java.util.Map;
 
@@ -42,6 +47,7 @@ public class EntityManager {
     Entity entity = entities.remove(entityId);
     if (entity == null) return;
 
+    //BEN XIANG: EMPTY
     for (Component component : entity.getComponents()) {
       // TODO remove component and unsubscibe them
     }

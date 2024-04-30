@@ -1,3 +1,7 @@
+/*
+  Design patter:
+    * Dependency injection
+*/
 import java.util.ArrayList;
 import java.util.List;
 

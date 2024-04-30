@@ -1,3 +1,6 @@
+/* =============== MAIN ============ */
+
+
 // We can use an observer pattern for a renderer that updates the screen on a timer or something
 // All rendering objects 'listen' to the game clock
 

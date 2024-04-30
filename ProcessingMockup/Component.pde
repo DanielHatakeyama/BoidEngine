@@ -1,3 +1,9 @@
+/*
+  Design Patter:
+    * ECS
+    * Interfaces/Inheritance
+*/
+
 public interface Component {
 
   /* Description:
@@ -17,27 +23,6 @@ public interface Component {
   default void cleanup() {
   }
 }
-
-//// Tags provide a unique identification system of entity types. This is to distinguish two entities that are different but share the same set of components
-//public class Tag implements Component {
-//  private String tag;
-
-//  public Tag() {
-//    this.setTag("default");
-//  }
-
-//  public Tag(String tag) {
-//    this.setTag(tag);
-//  }
-
-//  public String getTag() {
-//    return tag;
-//  }
-
-//  public void setTag(String tag) {
-//    this.tag = tag.toLowerCase();
-//  }
-//}
 
 public class Transform implements Component {
 
@@ -174,6 +159,8 @@ public class RigidBody implements Component {
 
   public boolean isStatic = false;
 
+
+//Empty - BEN XIANG
   public RigidBody() {
     // Empty default constructor
     // TODO make a few more constuctors for init velocity and mass, no init acceleration
