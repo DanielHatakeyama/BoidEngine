@@ -105,6 +105,7 @@ Below is the current repository layout. Each `.pde` file handles a distinct aspe
 - Processing 4.x  
 - Java Runtime Environment (JRE) 8 or higher  
 <br>
+
 ---
 
 <div style="display: flex; align-items: center;">
