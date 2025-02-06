@@ -32,6 +32,7 @@ BoidEngine is not a full-stack implementation—it relies on Processing for grap
 ## “Me and da Boids” 
 **Video Demonstration:** *This interactive boid<sup><a href="#source3">[3]</a></sup> demonstration showcases the engine’s capabilities by using the ECS game engine to handle all objects, interactions, and behaviors for a flocking simulation.*
 
+<!--
 <div style="width: 720px; margin: 0 auto; text-align: center;">
   <video width="720" autoplay muted controls loop>
     <source src="resources/videos/boid_demo.mp4" type="video/mp4">
@@ -39,7 +40,18 @@ BoidEngine is not a full-stack implementation—it relies on Processing for grap
   </video>
   <p><strong>Video 1:</strong> Demonstration of multi-agent boid simulation implemented with ECS game engine.</p>
 </div>
+-->
 
+<div style="width: 720px; margin: 0 auto; text-align: center;">
+  <iframe width="720" height="405" src="https://www.youtube.com/embed/_Nx9rcltQ_I?autoplay=1&mute=1&loop=1&playlist=_Nx9rcltQ_I" 
+          frameborder="0" 
+          allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" 
+          allowfullscreen>
+  </iframe>
+  <div style="margin-top: 8px;">
+    <strong>Video 1:</strong> <code>https://www.youtube.com/watch?v=_Nx9rcltQ_I</code>
+  </div>
+</div>
 
 ## Design Overview
 
@@ -91,7 +103,7 @@ Below is the current repository layout. Each `.pde` file handles a distinct aspe
 - **Event-Driven Architecture** – Facilitates loose coupling between components and system logic.
 - **Strategy Pattern** – Used in rendering, providing multiple render strategies for different entity types.
 - **Composition** – Components attach to entities, avoiding deep inheritance hierarchies.
-- **Dependency Injection** – Decouples object creation from usage by injecting required dependencies into components at runtime.
+- **Dependency Injection** – Decouples object creation from usage by injecting required dependencies into components at runtime, enhancing modularity, flexibility, and testability.
 
 ## Running the Engine
 
