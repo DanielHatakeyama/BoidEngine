@@ -29,17 +29,23 @@ BoidEngine is not a full-stack implementation—it relies on Processing for grap
   Although currently focused on core game object and ECS functionality, BoidEngine is designed with extensibility in mind. Planned enhancements include integrating a consistent and easy-to-use user scripting interface, paving the way for a **future comprehensive game engine library built on top of Processing**.
 
 
- 
-
 ## “Me and da Boids” 
 **Video Demonstration:** *This interactive boid<sup><a href="#source3">[3]</a></sup> demonstration showcases the engine’s capabilities by using the ECS game engine to handle all objects, interactions, and behaviors for a flocking simulation.*
 
+<div style="width: 720px; margin: 0 auto; text-align: center;">
+  <video width="720" autoplay muted controls loop>
+    <source src="resources/videos/boid_demo.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
+  <p><strong>Video 1:</strong> Demonstration of multi-agent boid simulation implemented with ECS game engine.</p>
+</div>
 
 
 ## Design Overview
 
 ### Project Structure
 Below is the current repository layout. Each `.pde` file handles a distinct aspect of the ECS and is coupled with a brief description.
+
 ```
 ├── ProcessingMockup  
 │    ├── BoidSystems.pde    // FUTURE: Implement formal script loader
@@ -64,17 +70,19 @@ Below is the current repository layout. Each `.pde` file handles a distinct aspe
   <b>Fig 1:</b> Project layout with descriptions.
 </div>
 
+---
 
 ### UML Diagram
 
 
-<img width="806" alt="UML Diagram ECS Boid Engine" src="resources\images\UML_Diagram_ECS_Boid_Engine.png">
-
-<div align="center">
-  <b>Fig 2:</b> <code>resources\images\UML_Diagram_ECS_Boid_Engine.png</code>
+<div style="width: 806px; margin: 0 auto;">
+  <img width="806" alt="UML Diagram ECS Boid Engine" src="resources/images/UML_Diagram_ECS_Boid_Engine.png">
+  <div style="text-align: center; margin-top: 8px;">
+    <strong>Fig 2:</strong> <code>resources/images/UML_Diagram_ECS_Boid_Engine.png</code>
+  </div>
 </div>
 
-
+---
 
 ### Main Utilized Design Patterns
 
@@ -83,9 +91,7 @@ Below is the current repository layout. Each `.pde` file handles a distinct aspe
 - **Event-Driven Architecture** – Facilitates loose coupling between components and system logic.
 - **Strategy Pattern** – Used in rendering, providing multiple render strategies for different entity types.
 - **Composition** – Components attach to entities, avoiding deep inheritance hierarchies.
-- **Dependency Injecttion** – ADD DESCRIPTION HERE
-
-
+- **Dependency Injection** – Decouples object creation from usage by injecting required dependencies into components at runtime.
 
 ## Running the Engine
 

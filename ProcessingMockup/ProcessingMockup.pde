@@ -16,7 +16,7 @@ float lastFrameTime;
 
 public void setup() {
 
-  size(1600, 1000);
+  size(1280, 720);
 
   // Setup Main Systems (TODO make this encapsulated in a world object or something) (This would hold the last frame time and stuff.
   eventManager = new EventManager();
