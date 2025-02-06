@@ -43,9 +43,8 @@ BoidEngine is not a full-stack implementation—it relies on Processing for grap
 -->
 
 <div style="width: 720px; margin: 0 auto; text-align: center;">
-  <iframe width="720" height="405" src="https://www.youtube.com/embed/_Nx9rcltQ_I?autoplay=1&mute=1&loop=1&playlist=_Nx9rcltQ_I" 
-          frameborder="0" 
-          allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" 
+  <iframe width="720" height="405" src="https://www.youtube.com/watch?v=_Nx9rcltQ_I" 
+          frameborder="0"
           allowfullscreen>
   </iframe>
   <div style="margin-top: 8px;">
