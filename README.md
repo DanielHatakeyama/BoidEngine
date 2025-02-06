@@ -104,7 +104,6 @@ Below is the current repository layout. Each `.pde` file handles a distinct aspe
 ### Requirements
 - Processing 4.x  
 - Java Runtime Environment (JRE) 8 or higher  
-<br>
 
 ---
 
@@ -118,6 +117,7 @@ Below is the current repository layout. Each `.pde` file handles a distinct aspe
 </div>
 
 ---
+
 ### Installation
 1. Install [Processing 4](https://processing.org/download).
 2. Clone or download this repository to your local machine.
