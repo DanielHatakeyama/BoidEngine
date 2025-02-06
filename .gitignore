@@ -1,0 +1,10 @@
+# VS Code settings
+.vscode/
+.history/
+# Processing build artifacts
+build/
+*.class
+
+ProcessingMockup/.history/
+ProcessingMockup/.vscode/
+ProcessingMockup/out/
