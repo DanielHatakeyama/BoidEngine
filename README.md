@@ -40,9 +40,12 @@ BoidEngine is not a full-stack implementation—it relies on Processing for grap
   </video>
   <p><strong>Video 1:</strong> Demonstration of multi-agent boid simulation implemented with ECS game engine.</p>
 </div>
--->
 
 [![Video Title](http://img.youtube.com/vi/_Nx9rcltQ_I/0.jpg)](https://www.youtube.com/watch?v=_Nx9rcltQ_I)
+
+-->
+
+https://github.com/user-attachments/assets/dc47a821-33a9-4c7b-89b0-fe460140a7be
 
 ## Design Overview
 
